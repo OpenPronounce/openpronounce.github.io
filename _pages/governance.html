@@ -1,0 +1,107 @@
+<!-- {"title": "Governance, licensing and maintenance", "description": "OpenPronounce is open source from code to models: how decisions are made, how contributions are licensed, how releases are published, where the models and data come from, why recordings never leave your servers, and what happens if the project stops.", "nav": ""} -->
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Governance, licensing and maintenance</h1>
+    <p class="lead">Before you build a product on a piece of software, you want to know what you can see of it, how it changes, and what happens to you if it stops. This page answers those three questions for OpenPronounce.</p>
+    <p class="soft small">Contents: <a href="#open">open source</a>, <a href="#privacy">your data</a>, <a href="#decisions">decisions</a>, <a href="#licence">licence</a>, <a href="#contributions">contributions</a>, <a href="#releases">releases</a>, <a href="#models">models and data</a>, <a href="#funding">funding</a>, <a href="#continuity">continuity</a>, <a href="#security">security</a>.</p>
+  </header>
+</div>
+
+<section class="block" id="open">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Open source, all of it</h2>
+      <p class="soft">The code, the trained models, the scripts that trained them and the benchmarks that measure them are public under the AGPL-3.0. There is no private edition, no closed component and no part reserved for paying customers. What you evaluate is what you ship.</p>
+      <p class="soft">Every claim on this site can be checked: the figures come with the scripts that reproduce them, and the models can be retrained on your own ratings.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="privacy">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Your recordings stay on your servers</h2>
+      <p class="soft">OpenPronounce runs inside your infrastructure. Recordings are analysed on your machines and are never sent to the project or to anyone else: the software has no account, no licence server and no telemetry. Once the speech models are downloaded, it runs without network access.</p>
+      <p class="soft">One default sends something out: the first time a sentence is analysed, its text, never the audio, goes to Google's speech synthesis to build a reference reading. <a href="docs/configuration.html">One setting turns it off</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="decisions">
+  <div class="wrap">
+    <div class="prose">
+      <h2>How decisions are made</h2>
+      <p class="soft">Everything happens in the open, on <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>: bug reports, feature requests, discussions and pull requests. A commercial licence buys a faster answer, never a private fork or a different version of the software.</p>
+      <p class="soft">One rule matters more than the others. A change that moves the scores is merged only with its figures: the correlation with human raters on the speechocean762 test split, before and after, measured by the scripts in <code>benchmarks/</code>. The changelog records those figures for each change, so you can see what every release did to the scores you rely on.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="licence">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Licence</h2>
+      <p class="soft">The code and the models are published under the GNU Affero General Public License, version 3 or later. Anyone can use, study, change and share them. A product built on them that is distributed, or offered to users over a network, must publish its own source code under the same licence.</p>
+      <p class="soft">A product that cannot do that takes a <a href="pricing.html">commercial licence</a>, which replaces the AGPL for that product. The software is the same in both cases.</p>
+      <p class="soft">Versions 0.1 to 0.4 were released under the MIT licence and remain under it. The third-party components, their licences and the data the models were trained on are listed in the <code>NOTICE</code> file of the repository, and <a href="docs/licensing.html">Licensing</a> explains what each licence allows.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="contributions">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Contributions</h2>
+      <p class="soft">Bug reports, benchmark results on new data, new languages and pull requests are welcome. <code>CONTRIBUTING.md</code> describes how to run the tests and how to add a language.</p>
+      <p class="soft">Because the project is sold under a second licence, every contribution has to come in under terms that allow both. By opening a pull request, a contributor licenses the contribution to the project under the MIT licence, confirms the right to submit it, and signs the commits with <code>git commit -s</code>. Contributors keep the copyright on what they write. There is no separate agreement to sign.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="releases">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Releases</h2>
+      <p class="soft">Releases are numbered, tagged in git, and published to PyPI by a GitHub Actions workflow through trusted publishing, so no one uploads a package by hand. Each one comes with a changelog entry that lists what changed and, for anything that moves the scores, by how much.</p>
+      <p class="soft">The project is before version 1.0. A minor release may still change the result format; the changelog says so when it does. Pin the version you ship, and read the changelog before upgrading.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="models">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Models and data</h2>
+      <p class="soft">The scoring models are small JSON files shipped in the package. Each one states its licence, the data it was trained on and its measured agreement with human raters; <code>openpronounce --models</code> prints them. The scripts that train them and the scripts that measure them are in the repository, so every figure published on this site can be reproduced.</p>
+      <p class="soft">The English models were trained on speechocean762 (CC BY 4.0). The settings of the other languages were computed on FLEURS (CC BY 4.0). The English pronunciations come from the CMU Pronouncing Dictionary, shipped with the package. Two speech recognition models (Apache-2.0) are downloaded from Hugging Face on the first run and are not redistributed.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="funding">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Funding</h2>
+      <p class="soft">Commercial licences pay for the work: maintenance, answers to questions, and the next languages. GitHub Sponsors is open to anyone who wants to support the project without a licence. No feature is held back for paying customers.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="continuity">
+  <div class="wrap">
+    <div class="prose">
+      <h2>If the project stopped</h2>
+      <p class="soft">The code, the models, the training scripts and the benchmarks are public, and the AGPL cannot be withdrawn from what has been published. Your team, or anyone else, could keep the version you ship running, fix it, retrain it on your own ratings with <code>OPENPRONOUNCE_MODELS_DIR</code>, or fork the project.</p>
+      <p class="soft">Nothing in the software calls home or expires. A deployed version keeps working exactly as it does today, whatever happens to the project or to this site.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="security">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Security</h2>
+      <p class="soft">Please do not report a vulnerability in a public issue. Send it through <a href="contact.html">the contact page</a> instead. Receipt is confirmed, the fix ships in a release, and you are credited if you wish.</p>
+    </div>
+  </div>
+</section>

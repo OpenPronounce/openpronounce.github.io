@@ -1,0 +1,39 @@
+<!-- {"title": "Contact", "description": "Write to the author of OpenPronounce: questions before buying, Enterprise quotes, non-profits, evaluation reports."} -->
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Contact</h1>
+    <p class="lead">Messages are answered within two working days. Bug reports and feature requests are better placed on <a href="https://github.com/Halleck45/OpenPronounce/issues">GitHub</a>, where other users can see the answer.</p>
+  </header>
+  <div class="split" style="padding-bottom:88px">
+    <div>
+      <form class="form" id="contact" novalidate>
+        <div class="field"><label for="topic">Subject</label>
+          <select id="topic" name="topic">
+            <option>Question before buying</option>
+            <option>Enterprise licence</option>
+            <option>Non-profit or public body</option>
+            <option>Evaluation report</option>
+            <option>Other</option>
+          </select></div>
+        <div class="grid-2">
+          <div class="field"><label for="name">Name</label><input id="name" name="fullname" type="text" required autocomplete="name"></div>
+          <div class="field"><label for="reply">Email</label><input id="reply" name="reply" type="email" required autocomplete="email"></div>
+        </div>
+        <div class="field"><label for="org">Company or organisation</label><input id="org" name="company" type="text" autocomplete="organization"></div>
+        <div class="field"><label for="message">Message</label><textarea id="message" name="message" required></textarea><span class="hint">What you are building, for which speakers and languages, and what you need to know.</span></div>
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div><button class="btn" type="submit">Send the message</button></div>
+        <p class="hint form-error" role="alert" hidden></p>
+      </form>
+      <div class="answer" id="contact-done" hidden tabindex="-1">
+        <h3>Message sent</h3>
+        <p class="soft">The answer will come to <strong class="addr"></strong>, within two working days.</p>
+      </div>
+    </div>
+    <aside class="side">
+      <h3>Before you write</h3>
+      <p class="soft small">For an Enterprise quote, say how many products would ship OpenPronounce and roughly how many recordings a day they handle.</p>
+      <p class="soft small" data-email-block hidden>Or write directly to <a data-email href="#"></a>.</p>
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<!-- {"title": "OpenPronounce HTTP API", "description": "Endpoints of the OpenPronounce server, with curl and JavaScript examples, Docker and GPU images.", "nav": "docs"} -->
+<h1>HTTP API and Docker</h1>
+<p class="lead">The repository ships a FastAPI server with a web demo. Run the Docker image, or <code>uvicorn server:app</code> from a clone after <code>pip install ".[app]"</code>.</p>
+<div class="code"><pre><span class="p">$ </span>docker run -p 8000:8000 openpronounce
+<span class="p">$ </span>curl -F file=@answer.wav -F expected_text="Hello, I am a good designer" -F lang=en http://localhost:8000/pronunciation
+<span class="p">$ </span>curl -F file=@talk.wav http://localhost:8000/free</pre></div>
+<h2>Endpoints</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Endpoint</th><th>Form fields</th><th>Returns</th></tr></thead>
+<tbody>
+<tr><td><code>POST /pronunciation</code></td><td><code>file</code>, <code>expected_text</code>, <code>lang</code> (default <code>en</code>)</td><td>The full <a href="results.html">read-speech result</a></td></tr>
+<tr><td><code>POST /free</code></td><td><code>file</code>, <code>lang</code></td><td>The <a href="results.html">free-speech result</a></td></tr>
+<tr><td><code>POST /speech2text</code></td><td><code>file</code>, <code>lang</code></td><td><code>{"transcript": ...}</code></td></tr>
+<tr><td><code>POST /phonemes</code></td><td><code>text</code>, <code>lang</code></td><td>The expected sounds of a text</td></tr>
+<tr><td><code>POST /tts</code></td><td><code>text</code>, <code>lang</code></td><td>A reference reading, 16&nbsp;kHz wav</td></tr>
+<tr><td><code>GET /languages</code></td><td></td><td>The languages available</td></tr>
+<tr><td><code>GET /health</code></td><td></td><td>Liveness, for your orchestrator</td></tr>
+<tr><td><code>GET /docs</code></td><td></td><td>Interactive documentation</td></tr>
+</tbody></table></div>
+<h2>From a browser</h2>
+<div class="code"><pre><span class="k">const</span> form = <span class="k">new</span> FormData();
+form.append(<span class="s">"file"</span>, recordingBlob, <span class="s">"answer.webm"</span>);   <span class="c">// from MediaRecorder</span>
+form.append(<span class="s">"expected_text"</span>, <span class="s">"Hello, I am a good designer"</span>);
+<span class="k">const</span> result = <span class="k">await</span> (<span class="k">await</span> fetch(<span class="s">"/pronunciation"</span>, { method: <span class="s">"POST"</span>, body: form })).json();
+<span class="k">if</span> (!result.reliable) showRetry(result.reasons);</pre></div>
+<h2>In production</h2>
+<ul>
+<li>The image downloads the models at build time: deploy it where the network is closed.</li>
+<li>Count about 4&nbsp;GB of memory per instance, and scale on the number of recordings analysed at the same time.</li>
+<li><code>Dockerfile.gpu</code> builds the same server for an NVIDIA GPU.</li>
+<li>The server has no authentication of its own. Put it behind your gateway.</li>
+</ul>

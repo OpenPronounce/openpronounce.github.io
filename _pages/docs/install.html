@@ -1,0 +1,21 @@
+<!-- {"title": "Install OpenPronounce", "description": "Requirements, installation on Linux, macOS and Docker, GPU and offline use.", "nav": "docs"} -->
+<h1>Installation</h1>
+<p class="lead">Python 3.10 or later, <code>ffmpeg</code>, and for every language other than English the <code>espeak-ng</code> program.</p>
+<h2>Linux</h2>
+<div class="code"><pre><span class="p">$ </span>sudo apt install ffmpeg espeak-ng
+<span class="p">$ </span>pip install torch --index-url https://download.pytorch.org/whl/cpu
+<span class="p">$ </span>pip install openpronounce</pre></div>
+<p>The first <code>pip</code> line installs the CPU build of PyTorch, several times smaller than the default one. Skip it if you have an NVIDIA GPU.</p>
+<h2>macOS</h2>
+<div class="code"><pre><span class="p">$ </span>brew install ffmpeg espeak-ng
+<span class="p">$ </span>pip install openpronounce</pre></div>
+<h2>Docker</h2>
+<div class="code"><pre><span class="p">$ </span>git clone https://github.com/Halleck45/OpenPronounce &amp;&amp; cd OpenPronounce
+<span class="p">$ </span>docker build -t openpronounce .
+<span class="p">$ </span>docker run -p 8000:8000 openpronounce</pre></div>
+<p>The image holds the models, so the container starts fast and works offline. <code>Dockerfile.gpu</code> builds the same image for an NVIDIA GPU. On Windows, use Docker or WSL.</p>
+<h2>The first run</h2>
+<p>The first analysis downloads two Wav2Vec2 speech models of 1.2&nbsp;GB each into the Hugging Face cache (<code>~/.cache/huggingface</code>, or <code>$HF_HOME</code>). Later runs read them from disk. To make sure nothing is fetched any more, set <code>HF_HUB_OFFLINE=1</code>.</p>
+<h2>Check it</h2>
+<div class="code"><pre><span class="p">$ </span>openpronounce --models</pre></div>
+<p>It lists the scoring models it found, with their licence and their measured agreement. Then go to <a href="read-speech.html">your first sentence</a>.</p>

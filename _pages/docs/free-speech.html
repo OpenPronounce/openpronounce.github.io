@@ -1,0 +1,18 @@
+<!-- {"title": "Score free speech", "description": "Score a recording without knowing what the speaker meant to say: transcript, four scores, unclear words, segments.", "nav": "docs"} -->
+<h1>Free speech</h1>
+<p class="lead">Call it without a text to score an open answer of a few seconds or a presentation of several minutes.</p>
+<div class="code"><pre><span class="p">$ </span>openpronounce harvard.wav
+<span class="c">Score        : 78.2/100</span>
+<span class="c">               accuracy 81.5, fluency 78.8, prosodic 77.5</span>
+<span class="c">Transcription: the stale smell of old bear lingers it takes heat to bring out the odor ...</span>
+<span class="c">Speech       : 15.9 s in 4 segment(s)</span></pre></div>
+<div class="code"><pre>result = assess(load_audio(<span class="s">"talk.wav"</span>))          <span class="c"># or assess_free(...)</span>
+result[<span class="s">"mode"</span>]            <span class="c"># 'free'</span>
+result[<span class="s">"segments"</span>][0]     <span class="c"># {'start': 0.922, 'end': 4.006, 'transcribe': 'the stale smell of old bear lingers', 'scores': {...}}</span></pre></div>
+<h2>How it scores without a text</h2>
+<p>The recording is cut at its pauses into parts of at most 12 seconds. Each part is transcribed, and the transcript plays the role of the expected sentence: the sounds heard are compared with the sounds of the words recognised. The scores of the parts are averaged, weighted by their duration.</p>
+<p>The English scorer also reads what the speech model computes internally on the recording, which carries the accent and the rhythm the measures miss. That brought its agreement with raters from 0.67 to 0.71, and makes it steadier on telephone audio.</p>
+<h2>What you do not get</h2>
+<p>Without a text, nobody knows which word the speaker meant. A word that came out badly is reported as <code>unclear</code>, never as mispronounced, and there is no list of expected and heard sounds to blame.</p>
+<div class="note red"><strong>Not suitable for young children.</strong> Without a text, the score follows the raters at 0.42 for children of 12 and under. Give them sentences to read.</div>
+<div class="note"><strong>Hesitation costs points.</strong> The scorer learned from read sentences, where a pause is a fault. A fluent speaker thinking aloud loses a few points in fluency and prosody.</div>

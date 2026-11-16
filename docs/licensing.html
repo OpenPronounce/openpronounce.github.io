@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenPronounce licensing</title>
+<meta name="description" content="AGPL-3.0 or a commercial licence: what each allows, and the third-party programs that keep their own licence.">
+<link rel="canonical" href="https://openpronounce.github.io/docs/licensing.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenPronounce licensing">
+<meta property="og:description" content="AGPL-3.0 or a commercial licence: what each allows, and the third-party programs that keep their own licence.">
+<meta property="og:url" content="https://openpronounce.github.io/docs/licensing.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../developers.html">Developers</a>
+      <a href="../teams.html">For teams</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="../developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap"><div class="docs"><nav class="docs-nav" aria-label="Documentation"><div><h4>Getting started</h4><ul><li><a href="../docs/index.html">Introduction</a></li><li><a href="../docs/install.html">Installation</a></li></ul></div><div><h4>Using it</h4><ul><li><a href="../docs/read-speech.html">A sentence to read</a></li><li><a href="../docs/free-speech.html">Free speech</a></li><li><a href="../docs/results.html">Reading a result</a></li><li><a href="../docs/http-api.html">HTTP API and Docker</a></li><li><a href="../docs/configuration.html">Configuration</a></li></ul></div><div><h4>Trusting it</h4><ul><li><a href="../docs/evaluate.html">Measure it on your data</a></li><li><a href="../docs/languages.html">Languages</a></li><li><a href="../docs/limits.html">What it does not do</a></li><li><a href="../docs/how-it-works.html">How it works</a></li></ul></div><div><h4>Licensing</h4><ul><li><a href="../docs/licensing.html" aria-current="page">Which licence you need</a></li></ul></div></nav><article class="doc"><h1>Licensing</h1>
+<p class="lead">Free software under the AGPL-3.0, or a commercial licence that replaces it. The code and the models are the same.</p>
+<h2>The AGPL, free</h2>
+<p>Use it, study it, change it, share it. If you distribute a product built on it, or let people use one over a network, publish that product's source under the same licence. Testing it and measuring it on your own data asks nothing of you.</p>
+<h2>The commercial licence</h2>
+<p>For a product whose code stays closed: a server, a mobile app, a web platform. It covers the code and the shipped models, every language, for one product and one year, with no limit on volume. <a href="../pricing.html">Prices</a>.</p>
+<h2>What no licence of ours covers</h2>
+<p>Nothing OpenPronounce imports is under a copyleft licence. Three things around it are, and keep their own licence:</p>
+<ul>
+<li><strong>espeak-ng</strong> (GPL-3), needed for every language but English. It runs as a separate program: OpenPronounce reads what it prints without linking any of it. If you ship espeak-ng, its licence applies to it alone.</li>
+<li><strong>The Piper voices</strong> (GPL-3), an optional extra for offline reference readings.</li>
+<li><strong>The mouth drawings</strong> of the web demo.</li>
+</ul>
+<h2>Older versions</h2>
+<p>Releases 0.1 to 0.4 were published under the MIT licence and stay under it.</p>
+<h2>Models</h2>
+<p>Each model file states its licence; <code>openpronounce --models</code> prints it. The shipped models follow the licence of the code. They were trained on speechocean762 (CC BY 4.0).</p>
+<div class="pager"><a class="prev" href="../docs/how-it-works.html"><small>Previous</small>How it works</a></div></article></div></div></main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="../developers.html">Installation guide</a></li>
+        <li><a href="../teams.html">For teams</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="../docs/install.html">Installation</a></li>
+        <li><a href="../docs/results.html">Reading a result</a></li>
+        <li><a href="../docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="../docs/limits.html">What it does not do</a></li>
+        <li><a href="../faq.html">Questions and answers</a></li>
+        <li><a href="../governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="../docs/licensing.html">Which licence you need</a></li>
+        <li><a href="../buy.html">Buy a licence</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

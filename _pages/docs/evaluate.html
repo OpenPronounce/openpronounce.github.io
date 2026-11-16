@@ -1,0 +1,37 @@
+<!-- {"title": "Measure OpenPronounce on your data", "description": "Run openpronounce-evaluate on your own rated recordings and read how closely it follows your own assessors.", "nav": "docs"} -->
+<h1>Measure it on your data</h1>
+<p class="lead">The published figures come from one corpus of non-native speakers reading short English sentences. This page explains how to measure the agreement between OpenPronounce and your own assessors, on your own recordings.</p>
+<h2>Prepare a CSV of rated recordings</h2>
+<div class="code"><pre>audio,score,text,level
+recordings/0001.wav,7,"I would like a glass of water",B1
+recordings/0002.wav,4,"I would like a glass of water",A2
+recordings/0003.wav,8,,C1</pre></div>
+<ul>
+<li><code>audio</code>: a path, relative to the CSV.</li>
+<li><code>score</code>: your assessors' rating, on any scale (0 to 10, 1 to 5, levels mapped to numbers).</li>
+<li><code>text</code>: what the speaker had to say. Leave it empty for free speech.</li>
+<li>Any other column becomes a breakdown: level, first language, age group, microphone.</li>
+</ul>
+<p>A hundred recordings give a usable figure. With fewer, the confidence interval gets wide.</p>
+<h2>Run the command</h2>
+<div class="code"><pre><span class="p">$ </span>openpronounce-evaluate recordings.csv --group-by level</pre></div>
+<p>It scores the recordings one by one into <code>recordings.results.csv</code> and resumes where it stopped if interrupted. <code>--lang</code> sets the language, <code>--report-only</code> reprints the report without scoring anything.</p>
+<h2>Read the report</h2>
+<p>On 150 rated recordings of the benchmark it printed:</p>
+<div class="code" data-nocopy><pre><span class="c">150 recordings: 150 compared with a rating, 0 could not be scored, 0 without a rating</span>
+<span class="c">flagged unreliable: 1, poor recording quality: 0</span>
+<span class="c">all                          n=  150  Pearson 0.840 [0.78, 0.88]  Spearman 0.737  error 0.60</span>
+<span class="c">to read our score on your scale: yours = 0.1001 x ours + 0.031</span></pre></div>
+<ul>
+<li><strong>Pearson</strong> is the agreement, from 0 to 1, and the brackets are its 95&nbsp;% interval. Read the interval, not the point.</li>
+<li><strong>Error</strong> is how far its score falls from your rating on average, in your units, once mapped on your scale.</li>
+<li><strong>The last line</strong> converts its 0 to 100 into your scale, if you want to show your own.</li>
+</ul>
+<div class="side" data-reader>
+  <div class="field">
+    <label for="reader-r">Your Pearson</label>
+    <input id="reader-r" type="text" inputmode="decimal" value="0.84" autocomplete="off">
+  </div>
+  <p class="reader-out" style="margin-top:14px"></p>
+</div>
+<p>If you can share the report, please send it. It is the only way to learn how OpenPronounce does on speakers nobody has measured.</p>

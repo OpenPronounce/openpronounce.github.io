@@ -1,0 +1,139 @@
+<!-- {"title": "Evaluating OpenPronounce for a product", "description": "Agreement with your own raters, cost compared with a cloud API, where recordings go, error handling, maintenance and a two-week evaluation plan.", "nav": "teams"} -->
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Evaluating OpenPronounce for a product</h1>
+    <p class="lead">This page answers the questions a technical or product lead usually asks before choosing a pronunciation engine, and describes how to test it on your own recordings at no cost.</p>
+    <p class="soft small">Contents: <a href="#agreement">agreement</a>, <a href="#cost">cost</a>, <a href="#data">data</a>, <a href="#errors">errors</a>, <a href="#maintenance">maintenance</a>, <a href="#plan">evaluation plan</a>, <a href="#purchasing">purchasing</a>.</p>
+  </header>
+</div>
+
+<section class="block" id="agreement">
+  <div class="wrap">
+    <div class="split">
+      <div class="prose">
+        <h2>Does it agree with our own raters?</h2>
+        <p class="soft">On the public benchmark, 2,500 recordings rated by five experts, the overall score correlates at 0.85 with the raters for adults reading a sentence and 0.82 for adults speaking without a text. Averaged over the ten recordings each speaker made, the free-speech score ranks speakers at 0.88.</p>
+        <p class="soft">They are non-native speakers reading short English sentences, so the figure that matters is the one measured on your own speakers. The <code>openpronounce-evaluate</code> command produces it. If you already have it, enter it here to see how to use the score.</p>
+      </div>
+      <div class="side" data-reader>
+        <div class="field">
+          <label for="reader-r">Pearson value from your report</label>
+          <input id="reader-r" type="text" inputmode="decimal" value="0.84" autocomplete="off">
+          <span class="hint">0.84 is the value it gave on 150 recordings of the benchmark.</span>
+        </div>
+        <p class="reader-out"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="cost">
+  <div class="wrap">
+    <div class="prose">
+      <h2>What does it cost compared with a cloud API?</h2>
+      <p class="soft">Self-hosting costs a server and a licence; a cloud API costs a price per hour of audio. Enter your own figures.</p>
+    </div>
+    <form class="split" id="calc" autocomplete="off">
+      <div class="form">
+        <div class="grid-2">
+          <div class="field"><label for="c-rec">Recordings per day</label><input id="c-rec" type="number" min="0" step="100" value="5000"></div>
+          <div class="field"><label for="c-sec">Seconds per recording</label><input id="c-sec" type="number" min="1" step="1" value="15"></div>
+        </div>
+        <div class="field"><label for="c-price">Cloud price per hour of audio (&euro;)</label><input id="c-price" type="number" min="0" step="0.1" value="1.2"><span class="hint">Take it from your current invoice or your provider's price list.</span></div>
+        <div class="grid-2">
+          <div class="field"><label for="c-server">CPU server per month (&euro;)</label><input id="c-server" type="number" min="0" step="10" value="90"></div>
+          <div class="field"><label for="c-tier">Licence</label>
+            <select id="c-tier"><option value="small">Small business</option><option value="business" selected>Business</option><option value="enterprise">Enterprise (from)</option></select></div>
+        </div>
+      </div>
+      <div class="prose">
+        <div class="result-line">
+          <div><span>Cloud API per year</span><b id="o-cloud"></b><span id="o-hours"></span></div>
+          <div><span>OpenPronounce per year</span><b id="o-own"></b><span id="o-servers"></span></div>
+        </div>
+        <p id="o-verdict"></p>
+        <p class="hint">A 16-thread CPU server runs the full analysis at about three times real time, close to 70 hours of audio a day. The calculation assumes 48 hours per server to leave headroom.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="block" id="data">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Where do the recordings go?</h2>
+      <p class="soft">Nowhere. They are processed on the machine that runs OpenPronounce and are not sent to the project or to any third party. The software has no account, no licence server and no telemetry.</p>
+      <p class="soft">For a company, that changes the paperwork more than the code. A voice recording is personal data. Sent to a cloud API, each one goes to a vendor, who becomes a processor to declare, with a contract to sign and sometimes a transfer outside the European Union to justify. Kept on your servers, the recordings stay under the policies you already have.</p>
+      <p class="soft">Two network accesses exist by default, and both can be removed:</p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>What is sent</th><th>When</th><th>How to remove it</th></tr></thead>
+        <tbody>
+          <tr><td>Download of the speech models from Hugging Face</td><td>First run</td><td>Build the models into your image and set <code>HF_HUB_OFFLINE=1</code></td></tr>
+          <tr><td>Text of the expected sentence, never the audio, to Google's speech synthesis</td><td>First analysis of each sentence</td><td><code>OPENPRONOUNCE_TTS=piper</code>, or quick mode</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="errors">
+  <div class="wrap">
+    <div class="prose">
+      <h2>What happens when the score is wrong?</h2>
+      <p class="soft">Every result carries <code>reliable</code> and a list of reasons: the recording does not match the sentence, words are missing, there is too little speech, or the audio is clipped, noisy or too quiet. Your application decides what the user sees in those cases.</p>
+      <p class="soft">The known weaknesses are published with figures in <a href="docs/limits.html">the list of limits</a>. If your use needs it, the scoring models can be retrained on your own ratings: they are JSON files, the training scripts are in the repository, and <code>OPENPRONOUNCE_MODELS_DIR</code> loads your versions in place of the shipped ones.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="maintenance">
+  <div class="wrap">
+    <div class="split">
+      <div class="prose">
+        <h2>What if the project stops?</h2>
+        <p class="soft">Nothing you ship would break. The code, the models and the scripts that trained them are public under the AGPL, nothing in the software calls home or expires, and your team could keep maintaining the version you ship. Commercial licences pay for maintenance and the next languages; <a href="governance.html">Governance</a> describes how the project is run.</p>
+        <p class="soft">Each model file states its licence, its training data and its measured agreement:</p>
+      </div>
+      <div class="code" data-nocopy><pre><span class="p">$ </span>openpronounce --models
+<span class="c">en  free speech scorer AGPL-3.0-or-later, total pearson 0.708</span>
+<span class="c">    trained on speechocean762 train split, 2500 utterances, prompt hidden</span>
+<span class="c">en  utterance scorer AGPL-3.0-or-later, total pearson 0.790</span>
+<span class="c">    trained on speechocean762 train split, 2500 utterances + 742 synthetic negatives</span>
+<span class="c">en  word model       AGPL-3.0-or-later, word_auc_lt5 0.924</span>
+<span class="c">fr  native speakers of the language against those of English AGPL-3.0-or-later</span>
+<span class="c">    trained on FLEURS fr_fr dev, 120 native recordings, generic models</span>
+<span class="c">...</span></pre></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="plan">
+  <div class="wrap">
+    <div class="prose">
+      <h2>A two-week evaluation</h2>
+      <p class="soft">Everything below is allowed by the free licence. A commercial licence is only needed when a closed product reaches its users.</p>
+    </div>
+    <ol class="steps col">
+      <li class="step"><span class="n">1</span><div class="step-body"><h3>Day 1: install it</h3><p>An engineer runs the Docker image on a spare server or a laptop, in about an hour. See the <a href="developers.html">installation guide</a>.</p></div></li>
+      <li class="step"><span class="n">2</span><div class="step-body"><h3>Days 2 to 5: collect about 100 rated recordings</h3><p>Use recordings your assessors have already scored, on any scale, or have two assessors rate 100 new ones independently. Cover the levels, ages and devices of your product, and add a column for each breakdown you want: level, first language, microphone.</p></div></li>
+      <li class="step"><span class="n">3</span><div class="step-body"><h3>Day 6: measure</h3><div class="code"><pre><span class="p">$ </span>openpronounce-evaluate recordings.csv --group-by level --group-by first_language</pre></div><p>The report gives the correlation with your assessors, with its confidence interval, overall and for each group, and a formula that maps the score onto your scale.</p></div></li>
+      <li class="step"><span class="n">4</span><div class="step-body"><h3>Second week: try it with real users</h3><p>Enable it for a small share of your users behind a feature flag. Show a band rather than a number and hide unreliable results. Ask your assessors whether the flagged words are the ones they would have chosen.</p></div></li>
+      <li class="step"><span class="n">5</span><div class="step-body"><h3>Decide</h3><p>If the figure and your assessors' opinion are good enough, choose the licence that fits and ship. If not, the evaluation cost two weeks of work. In both cases, the report is welcome: it is how the project learns how it does on speakers like yours.</p></div></li>
+    </ol>
+  </div>
+</section>
+
+<section class="block" id="purchasing">
+  <div class="wrap">
+    <h2>Purchasing</h2>
+    <div class="faq">
+      <details><summary>Which licence do we need?</summary><div class="a"><p>One per product that includes OpenPronounce, priced by your company's revenue in the last fiscal year. <a href="pricing.html#choose">Two questions on the pricing page</a> give the answer.</p></div></details>
+      <details><summary>Do we need a licence to evaluate it?</summary><div class="a"><p>No. Installing, testing and measuring it on your own data are covered by the AGPL, without time limit.</p></div></details>
+      <details><summary>Can we pay by bank transfer against a purchase order?</summary><div class="a"><p>Yes for Enterprise licences; <a href="contact.html#enterprise">ask for a quote</a> and say what your purchasing department needs. Small business and Business licences are paid online by card.</p></div></details>
+      <details><summary>What hardware does it need?</summary><div class="a"><p>A recent CPU server with 4&nbsp;GB of free memory. A two-second sentence takes under half a second in quick mode. A GPU is used when present but is not required.</p></div></details>
+      <details><summary>What about the other languages?</summary><div class="a"><p>French, Spanish, German, Italian, Portuguese and Dutch are included in every licence. Native speakers score in them as they do in English, but no rated corpus of non-native speech exists yet to measure agreement with human raters. If you have rated recordings, the evaluation above would provide the first figures. See <a href="docs/languages.html">Languages</a>.</p></div></details>
+    </div>
+  </div>
+</section>

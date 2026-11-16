@@ -1,0 +1,25 @@
+<!-- {"title": "Languages supported by OpenPronounce", "description": "English, French, Spanish, German, Italian, Portuguese and Dutch: what was measured in each, and how to add one.", "nav": "docs"} -->
+<h1>Languages</h1>
+<p class="lead">Seven languages are available, with or without a text. English is measured against human raters; the six others have been checked on native speakers only.</p>
+<div class="code"><pre><span class="p">$ </span>openpronounce bonjour.wav "Bonjour, je suis développeur" --lang fr</pre></div>
+<h2>What a native speaker scores</h2>
+<p>220 recordings of native speakers per language, reading sentences of their own language, then the same recordings with the text hidden. A native reading a long sentence gets about 75 in English; the other languages should land in the same place.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Language</th><th>Code</th><th>Natives, reading</th><th>Natives, no text</th></tr></thead>
+<tbody>
+<tr><td>English</td><td><code>en</code></td><td>73.7</td><td>70.7</td></tr>
+<tr><td>French</td><td><code>fr</code></td><td>76.0</td><td>73.0</td></tr>
+<tr><td>Spanish</td><td><code>es</code></td><td>76.6</td><td>72.3</td></tr>
+<tr><td>German</td><td><code>de</code></td><td>76.3</td><td>72.5</td></tr>
+<tr><td>Italian</td><td><code>it</code></td><td>72.5</td><td>70.4</td></tr>
+<tr><td>Portuguese</td><td><code>pt</code></td><td>74.6</td><td>72.1</td></tr>
+<tr><td>Dutch</td><td><code>nl</code></td><td>75.7</td><td>70.8</td></tr>
+</tbody></table></div>
+<p>About one word in a hundred read by a native is reported, and a word replaced by another is found three to four times in five.</p>
+<h2>What is not known yet</h2>
+<p>No corpus of non-native speech rated by experts exists for these six languages under a licence that allows it. So nobody can say yet how closely the scores follow a French or a German rater. On the few groups of native and non-native speakers that could be compared, natives come out ahead in short answers and read sentences, but not on an Italian text read aloud, where natives reading fast scored under careful non-native speakers.</p>
+<p>If you have rated recordings in one of these languages, <a href="evaluate.html">measure it</a>: your report would be the first.</p>
+<h2>What they need</h2>
+<p>Every language other than English needs the <code>espeak-ng</code> program installed, to turn text into sounds. It runs as a separate program; English uses a pronouncing dictionary instead.</p>
+<h2>Adding a language</h2>
+<p>A language needs a speech model for its transcription, an espeak-ng voice, and a native reference: a small JSON file computed from about 120 native recordings, placed in a folder that <code>OPENPRONOUNCE_MODELS_DIR</code> points to. The scripts that build it are in the repository, under <code>benchmarks/</code>.</p>

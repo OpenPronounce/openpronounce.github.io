@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Questions and answers</title>
+<meta name="description" content="Audio formats, 8 kHz and 16 kHz, recording length, CPU or GPU, memory, throughput, accuracy, languages, privacy and licensing.">
+<link rel="canonical" href="https://openpronounce.github.io/faq.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Questions and answers">
+<meta property="og:description" content="Audio formats, 8 kHz and 16 kHz, recording length, CPU or GPU, memory, throughput, accuracy, languages, privacy and licensing.">
+<meta property="og:url" content="https://openpronounce.github.io/faq.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="developers.html">Developers</a>
+      <a href="teams.html">For teams</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="faq.html" aria-current="page">FAQ</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Questions and answers</h1>
+    <p class="lead">What people ask before they plug OpenPronounce into a product. Each answer gives the figure when there is one, and says so when there is none yet.</p>
+    <p class="soft small">Jump to: <a href="#audio">audio</a>, <a href="#hardware">hardware</a>, <a href="#scores">scores</a>, <a href="#languages">languages</a>, <a href="#data">data and licence</a>.</p>
+  </header>
+</div>
+
+<section class="block" id="audio">
+  <div class="wrap">
+    <h2>Audio</h2>
+    <div class="faq">
+      <details open><summary>Does it work with 8 kHz audio, or only 16 kHz?</summary><div class="a">
+        <p>Both, and any other rate. Every recording is converted to 16&nbsp;kHz mono before analysis, so 8&nbsp;kHz phone audio goes in as it is.</p>
+        <p>Phone audio costs a little. On a simulated land line (8&nbsp;kHz, narrow band, G.711), the scores still follow the raters, but a given recording moves by 3 to 4 points on average compared with the same recording on a good microphone. Compare candidates recorded the same way, and record at 16&nbsp;kHz or more whenever you control the device. The figures are in <a href="docs/limits.html">the list of limits</a>.</p>
+        <p>From Python, <code>assess</code> expects a 16&nbsp;kHz mono waveform: read files with <code>load_audio</code>, which does the conversion.</p>
+      </div></details>
+      <details><summary>Which file formats does it read?</summary><div class="a">
+        <p>wav, mp3, flac and ogg directly, and anything else <code>ffmpeg</code> can decode: the webm/opus files that browsers record, m4a from phones. Stereo is mixed down to mono.</p>
+      </div></details>
+      <details><summary>Is there a maximum length?</summary><div class="a">
+        <p>No. Free speech is cut at its pauses into parts of at most 12 seconds, each scored on its own, so a long recording simply takes longer: three minutes of audio take 52 seconds on a 16-thread CPU.</p>
+        <p>There are minimums. Under half a second, the recording is rejected as too short. In free speech, under 3 seconds of speech or four recognised words, the result comes back marked unreliable.</p>
+        <p>For read sentences, the length that matters is the sentence. The scorer learned on sentences of up to 10 words, and native speakers score lower from 20 words up. Split a paragraph into sentences and score each one.</p>
+      </div></details>
+      <details><summary>What if two people speak on the same recording?</summary><div class="a">
+        <p>Both voices are scored together: OpenPronounce does not separate speakers. On a call, send only the channel of the person you are assessing, or cut out their turns before sending them.</p>
+      </div></details>
+      <details><summary>What happens with a noisy or clipped recording?</summary><div class="a">
+        <p>It is scored anyway. <code>audio_quality.issues</code> names the problem (too quiet, clipped, noisy, too short) and <code>reliable</code> turns false. Your application decides whether to show the score or ask for another take.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="hardware">
+  <div class="wrap">
+    <h2>Hardware</h2>
+    <div class="faq">
+      <details><summary>Do I need a GPU?</summary><div class="a">
+        <p>No. Everything runs on an ordinary CPU server. On 16 threads, a two-second sentence takes 0.45 seconds in quick mode, an 18-second reading 6.2 seconds with the full analysis, and three minutes of free speech 52 seconds.</p>
+      </div></details>
+      <details><summary>What does a GPU change?</summary><div class="a">
+        <p>It is used automatically when PyTorch sees a CUDA card. <code>OPENPRONOUNCE_DEVICE</code> forces a choice: <code>cpu</code>, <code>cuda</code>, <code>cuda:1</code>, or <code>mps</code> on a Mac. The speech models run much faster on a GPU, but no end-to-end timings on one have been published yet, so measure on your own card before sizing a cluster around it.</p>
+      </div></details>
+      <details><summary>How much memory and disk does it need?</summary><div class="a">
+        <p>About 4&nbsp;GB of memory. The two speech models weigh 1.2&nbsp;GB each and are downloaded on the first run; the Docker image already contains them.</p>
+      </div></details>
+      <details><summary>How many recordings can one server handle?</summary><div class="a">
+        <p>A 16-thread CPU server analyses audio about three times faster than real time, close to 70 hours of audio a day. One server process handles one analysis at a time: for more, run several containers behind a load balancer. The <a href="teams.html#cost">cost calculator</a> does the arithmetic for your volume.</p>
+      </div></details>
+      <details><summary>Does it run on macOS and Windows?</summary><div class="a">
+        <p>On macOS, with <code>pip</code> and Homebrew's <code>ffmpeg</code>. On Windows, use Docker or WSL. The <a href="developers.html">installation guide</a> has the commands.</p>
+      </div></details>
+      <details><summary>Can it run without network access?</summary><div class="a">
+        <p>Yes, once the speech models have been downloaded. Set <code>HF_HUB_OFFLINE=1</code>, and either use the offline Piper voices or quick mode, which needs no synthetic reading. See <a href="docs/configuration.html">Configuration</a>.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="scores">
+  <div class="wrap">
+    <h2>Scores</h2>
+    <div class="faq">
+      <details><summary>What does a score of 70 mean?</summary><div class="a">
+        <p>The scores reproduce the 0 to 10 ratings that five expert raters gave, multiplied by ten. These raters were strict: a clean adult reading gets about 80, not 100. Show a band rather than a decimal, because 76.6 and 78.1 describe the same performance.</p>
+      </div></details>
+      <details><summary>How close is it to human raters?</summary><div class="a">
+        <p>On 2,500 test recordings whose speakers were kept out of training, the overall score correlates at 0.85 with the raters for adults reading a sentence, and 0.82 for adults speaking without a text. Averaged over ten recordings per speaker, the free-speech score ranks speakers at 0.88.</p>
+        <p>Your speakers will differ. <code>openpronounce-evaluate</code> gives the same figure on recordings your own assessors have scored. See <a href="docs/evaluate.html">Measure it on your data</a>.</p>
+      </div></details>
+      <details><summary>Does it penalise accents?</summary><div class="a">
+        <p>It follows its raters, who marked what hurt intelligibility and let mild accent traits pass. But it learned from one corpus of speakers, and accents far from theirs are less well covered. That is the first thing to check with your own recordings.</p>
+      </div></details>
+      <details><summary>Will a native speaker get 100?</summary><div class="a">
+        <p>No. Natives reading score around 72 to 80. Natives talking freely score lower, about 66, because pauses and restarts count as faults, and very fast speech is not rewarded either.</p>
+      </div></details>
+      <details><summary>What is quick mode, and what does it skip?</summary><div class="a">
+        <p><code>--fast</code> on the command line runs the sound recogniser alone, without word transcription, synthetic reference reading or pitch curves. It answers in under half a second for a short sentence. The full analysis adds the transcript, the comparison with a native reading and the prosody curves.</p>
+      </div></details>
+      <details><summary>Why does free speech report "unclear" words instead of mistakes?</summary><div class="a">
+        <p>Without the sentence, OpenPronounce cannot know which word the speaker meant. It can tell that a word came out unclear, not what it should have been. Pass the sentence whenever you have it.</p>
+      </div></details>
+      <details><summary>Does it work with children?</summary><div class="a">
+        <p>With a sentence, yes, less well than with adults: 0.67 against 0.85. Without a sentence, no: 0.42. Have children read.</p>
+      </div></details>
+      <details><summary>Does it judge grammar or content?</summary><div class="a">
+        <p>No. Pronunciation only: sounds, fluency and prosody. A well-pronounced wrong answer gets a good score.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="languages">
+  <div class="wrap">
+    <h2>Languages</h2>
+    <div class="faq">
+      <details><summary>Which languages does it support?</summary><div class="a">
+        <p>English, French, Spanish, German, Italian, Portuguese and Dutch. English is the only one measured against human raters. The six others are checked on native speakers, who score in them as they do in English, but no rated corpus exists yet to give a correlation.</p>
+        <p>Languages other than English also need the <code>espeak-ng</code> program. See <a href="docs/languages.html">Languages</a>.</p>
+      </div></details>
+      <details><summary>Can I add a language?</summary><div class="a">
+        <p>Possibly, if <code>espeak-ng</code> knows it. A measured version needs rated recordings in that language. If you have some, <a href="contact.html">get in touch</a>.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="data">
+  <div class="wrap">
+    <h2>Data and licence</h2>
+    <div class="faq">
+      <details open><summary>Do recordings leave our servers?</summary><div class="a">
+        <p>No. They are analysed on your machines and sent nowhere, so there is no vendor to add to your privacy policy and no data processing agreement to sign for them. There is no account, no licence server and no telemetry. One default sends data out: the first time a sentence is analysed, its text, never the audio, goes to Google's speech synthesis to build a native reading. <code>OPENPRONOUNCE_TTS=piper</code> or quick mode removes it.</p>
+      </div></details>
+      <details><summary>Can we retrain the models on our own ratings?</summary><div class="a">
+        <p>Yes. The scoring models are JSON files, the training scripts are in the repository, and <code>OPENPRONOUNCE_MODELS_DIR</code> loads your versions in place of the shipped ones. <code>openpronounce --models</code> shows which are in use.</p>
+      </div></details>
+      <details><summary>Is it free?</summary><div class="a">
+        <p>Yes, under the AGPL-3.0: code, models and scripts. A product whose own source code stays closed needs a yearly commercial licence. Testing and evaluating it never does. See <a href="pricing.html">Pricing</a>.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="prose">
+      <p class="soft">A question not answered here? Ask it on <a href="https://github.com/Halleck45/OpenPronounce/issues">GitHub</a>, where the answer helps the next person, or use <a href="contact.html">the contact page</a>.</p>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="developers.html">Installation guide</a></li>
+        <li><a href="teams.html">For teams</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="docs/install.html">Installation</a></li>
+        <li><a href="docs/results.html">Reading a result</a></li>
+        <li><a href="docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="docs/limits.html">What it does not do</a></li>
+        <li><a href="faq.html">Questions and answers</a></li>
+        <li><a href="governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="docs/licensing.html">Which licence you need</a></li>
+        <li><a href="buy.html">Buy a licence</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

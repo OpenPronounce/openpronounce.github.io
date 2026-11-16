@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pricing</title>
+<meta name="description" content="OpenPronounce is open source and free under the AGPL: code, models and training scripts. A closed product takes a yearly licence, priced by company revenue, with no volume limit.">
+<link rel="canonical" href="https://openpronounce.github.io/pricing.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pricing">
+<meta property="og:description" content="OpenPronounce is open source and free under the AGPL: code, models and training scripts. A closed product takes a yearly licence, priced by company revenue, with no volume limit.">
+<meta property="og:url" content="https://openpronounce.github.io/pricing.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="developers.html">Developers</a>
+      <a href="teams.html">For teams</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html" aria-current="page">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Open source, and free to use</h1>
+    <p class="lead">The code, the trained models and the scripts that produced them are public under the AGPL-3.0. Nothing is kept back for paying customers. A commercial licence only buys one right: keeping the source code of your own product closed.</p>
+  </header>
+
+  <div class="plans" id="plans">
+    <div class="plan" data-plan="oss">
+      <div><h3>AGPL-3.0</h3><p>Everything: the code, the models, the training and evaluation scripts. For research, testing, and products that publish their own source under the AGPL.</p></div>
+      <div class="price">Free</div>
+      <a class="btn btn-line" href="developers.html">Install</a>
+    </div>
+    <div class="plan" data-plan="small">
+      <div><h3>Small business</h3><p>Company revenue under 250,000&nbsp;&euro; in the last fiscal year. Questions answered by email.</p></div>
+      <div class="price">1,200&nbsp;&euro; <small>per year</small></div>
+      <a class="btn" href="buy.html#small">Order</a>
+    </div>
+    <div class="plan" data-plan="business">
+      <div><h3>Business</h3><p>Revenue between 250,000&nbsp;&euro; and 5&nbsp;M&euro;. Answers within two working days, and help reading your evaluation report.</p></div>
+      <div class="price">4,800&nbsp;&euro; <small>per year</small></div>
+      <a class="btn" href="buy.html#business">Order</a>
+    </div>
+    <div class="plan" data-plan="enterprise">
+      <div><h3>Enterprise</h3><p>Revenue over 5&nbsp;M&euro;, or several products. Purchase order, bank transfer, and a call to plan the integration.</p></div>
+      <div class="price">From 12,000&nbsp;&euro; <small>per year</small></div>
+      <a class="btn btn-line" href="contact.html#enterprise">Request a quote</a>
+    </div>
+  </div>
+  <p class="soft small" style="margin-top:14px">Paid licences are for products whose source code stays closed: one per product, renewed each year, priced by the revenue of the company, with no limit on recordings, users or servers. Prices excluding VAT. Every licence covers all seven languages and every release published during the year. Revenue is that of the last closed fiscal year, as declared by the buyer.</p>
+</div>
+
+<section class="block" style="margin-top:clamp(40px,6vw,64px)">
+  <div class="wrap">
+    <div class="prose">
+      <h2>The same software, whichever licence you hold</h2>
+      <p class="soft">There is no community edition and no premium edition. A company paying 12,000&nbsp;&euro; a year runs exactly what anyone can install with <code>pip install openpronounce</code>, and can read every line of it.</p>
+      <p class="soft">The figures on this site come with the scripts that reproduce them, and the models can be retrained on your own ratings. If maintenance stopped tomorrow, nothing you depend on would disappear.</p>
+      <p class="soft">The licences pay for what open source rarely funds: maintenance, answers to questions, and the work on the next languages.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="choose">
+  <div class="wrap">
+    <h2>Which licence applies to you</h2>
+    <form class="split" id="chooser" onsubmit="return false">
+      <div class="form">
+        <fieldset>
+          <legend>What will you use it for?</legend>
+          <div class="radios">
+            <label><input type="radio" name="use" value="evaluate" checked><span>Testing it, or research</span></label>
+            <label><input type="radio" name="use" value="oss"><span>An open-source product</span></label>
+            <label><input type="radio" name="use" value="closed"><span>A product whose source code stays closed</span></label>
+          </div>
+        </fieldset>
+        <fieldset id="q-size" hidden>
+          <legend>Your company's revenue in the last fiscal year</legend>
+          <div class="radios">
+            <label><input type="radio" name="size" value="small" checked><span>Under 250,000&nbsp;&euro;</span></label>
+            <label><input type="radio" name="size" value="business"><span>250,000&nbsp;&euro; to 5&nbsp;M&euro;</span></label>
+            <label><input type="radio" name="size" value="enterprise"><span>Over 5&nbsp;M&euro;</span></label>
+          </div>
+        </fieldset>
+      </div>
+      <div class="answer" id="verdict" aria-live="polite">
+        <h3></h3>
+        <p class="soft"></p>
+        <a class="btn" href="developers.html"></a>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Licensing questions</h2>
+    <div class="faq">
+      <details><summary>What does the AGPL require?</summary><div class="a"><p>If you distribute a product built on OpenPronounce, or let people use it over a network, you must publish that product's source code under the AGPL. Using it internally to test or measure it requires nothing.</p></div></details>
+      <details><summary>What counts as one product?</summary><div class="a"><p>What you sell or offer under one name: an application, a platform, an API. The web, iOS and Android versions of the same application are one product. Two applications sold under different names are two.</p></div></details>
+      <details><summary>Is there a limit on recordings, users or servers?</summary><div class="a"><p>No.</p></div></details>
+      <details><summary>What if our revenue changes during the year?</summary><div class="a"><p>The price is set at renewal, on the fiscal year that has just closed.</p></div></details>
+      <details><summary>What does the licence not cover?</summary><div class="a"><p>Three separate components keep their own licence: espeak-ng (GPL-3), which the languages other than English need and which runs as a separate program; the optional Piper voices; and the mouth drawings of the web demo. English needs none of them. See <a href="docs/licensing.html">Licensing</a>.</p></div></details>
+      <details><summary>We are a non-profit or a public body.</summary><div class="a"><p>Research is covered by the AGPL. For a closed service, <a href="contact.html">get in touch</a>: the price is based on your annual budget rather than a revenue.</p></div></details>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="developers.html">Installation guide</a></li>
+        <li><a href="teams.html">For teams</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="docs/install.html">Installation</a></li>
+        <li><a href="docs/results.html">Reading a result</a></li>
+        <li><a href="docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="docs/limits.html">What it does not do</a></li>
+        <li><a href="faq.html">Questions and answers</a></li>
+        <li><a href="governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="docs/licensing.html">Which licence you need</a></li>
+        <li><a href="buy.html">Buy a licence</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

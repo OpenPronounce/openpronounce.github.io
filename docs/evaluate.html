@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Measure OpenPronounce on your data</title>
+<meta name="description" content="Run openpronounce-evaluate on your own rated recordings and read how closely it follows your own assessors.">
+<link rel="canonical" href="https://openpronounce.github.io/docs/evaluate.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Measure OpenPronounce on your data">
+<meta property="og:description" content="Run openpronounce-evaluate on your own rated recordings and read how closely it follows your own assessors.">
+<meta property="og:url" content="https://openpronounce.github.io/docs/evaluate.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../developers.html">Developers</a>
+      <a href="../teams.html">For teams</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="../developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap"><div class="docs"><nav class="docs-nav" aria-label="Documentation"><div><h4>Getting started</h4><ul><li><a href="../docs/index.html">Introduction</a></li><li><a href="../docs/install.html">Installation</a></li></ul></div><div><h4>Using it</h4><ul><li><a href="../docs/read-speech.html">A sentence to read</a></li><li><a href="../docs/free-speech.html">Free speech</a></li><li><a href="../docs/results.html">Reading a result</a></li><li><a href="../docs/http-api.html">HTTP API and Docker</a></li><li><a href="../docs/configuration.html">Configuration</a></li></ul></div><div><h4>Trusting it</h4><ul><li><a href="../docs/evaluate.html" aria-current="page">Measure it on your data</a></li><li><a href="../docs/languages.html">Languages</a></li><li><a href="../docs/limits.html">What it does not do</a></li><li><a href="../docs/how-it-works.html">How it works</a></li></ul></div><div><h4>Licensing</h4><ul><li><a href="../docs/licensing.html">Which licence you need</a></li></ul></div></nav><article class="doc"><h1>Measure it on your data</h1>
+<p class="lead">The published figures come from one corpus of non-native speakers reading short English sentences. This page explains how to measure the agreement between OpenPronounce and your own assessors, on your own recordings.</p>
+<h2>Prepare a CSV of rated recordings</h2>
+<div class="code"><pre>audio,score,text,level
+recordings/0001.wav,7,"I would like a glass of water",B1
+recordings/0002.wav,4,"I would like a glass of water",A2
+recordings/0003.wav,8,,C1</pre></div>
+<ul>
+<li><code>audio</code>: a path, relative to the CSV.</li>
+<li><code>score</code>: your assessors' rating, on any scale (0 to 10, 1 to 5, levels mapped to numbers).</li>
+<li><code>text</code>: what the speaker had to say. Leave it empty for free speech.</li>
+<li>Any other column becomes a breakdown: level, first language, age group, microphone.</li>
+</ul>
+<p>A hundred recordings give a usable figure. With fewer, the confidence interval gets wide.</p>
+<h2>Run the command</h2>
+<div class="code"><pre><span class="p">$ </span>openpronounce-evaluate recordings.csv --group-by level</pre></div>
+<p>It scores the recordings one by one into <code>recordings.results.csv</code> and resumes where it stopped if interrupted. <code>--lang</code> sets the language, <code>--report-only</code> reprints the report without scoring anything.</p>
+<h2>Read the report</h2>
+<p>On 150 rated recordings of the benchmark it printed:</p>
+<div class="code" data-nocopy><pre><span class="c">150 recordings: 150 compared with a rating, 0 could not be scored, 0 without a rating</span>
+<span class="c">flagged unreliable: 1, poor recording quality: 0</span>
+<span class="c">all                          n=  150  Pearson 0.840 [0.78, 0.88]  Spearman 0.737  error 0.60</span>
+<span class="c">to read our score on your scale: yours = 0.1001 x ours + 0.031</span></pre></div>
+<ul>
+<li><strong>Pearson</strong> is the agreement, from 0 to 1, and the brackets are its 95&nbsp;% interval. Read the interval, not the point.</li>
+<li><strong>Error</strong> is how far its score falls from your rating on average, in your units, once mapped on your scale.</li>
+<li><strong>The last line</strong> converts its 0 to 100 into your scale, if you want to show your own.</li>
+</ul>
+<div class="side" data-reader>
+  <div class="field">
+    <label for="reader-r">Your Pearson</label>
+    <input id="reader-r" type="text" inputmode="decimal" value="0.84" autocomplete="off">
+  </div>
+  <p class="reader-out" style="margin-top:14px"></p>
+</div>
+<p>If you can share the report, please send it. It is the only way to learn how OpenPronounce does on speakers nobody has measured.</p>
+<div class="pager"><a class="prev" href="../docs/configuration.html"><small>Previous</small>Configuration</a><a class="next" href="../docs/languages.html"><small>Next</small>Languages</a></div></article></div></div></main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="../developers.html">Installation guide</a></li>
+        <li><a href="../teams.html">For teams</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="../docs/install.html">Installation</a></li>
+        <li><a href="../docs/results.html">Reading a result</a></li>
+        <li><a href="../docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="../docs/limits.html">What it does not do</a></li>
+        <li><a href="../faq.html">Questions and answers</a></li>
+        <li><a href="../governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="../docs/licensing.html">Which licence you need</a></li>
+        <li><a href="../buy.html">Buy a licence</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

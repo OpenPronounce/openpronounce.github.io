@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Installation guide</title>
+<meta name="description" content="Install OpenPronounce, score a read sentence and free speech, call it from Python and over HTTP, and display the result.">
+<link rel="canonical" href="https://openpronounce.github.io/developers.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Installation guide">
+<meta property="og:description" content="Install OpenPronounce, score a read sentence and free speech, call it from Python and over HTTP, and display the result.">
+<meta property="og:url" content="https://openpronounce.github.io/developers.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="developers.html" aria-current="page">Developers</a>
+      <a href="teams.html">For teams</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Installation guide</h1>
+    <p class="lead">Six steps, from installation to a result shown in your application. You will have a first score at the end of step 2. Nothing here needs an account or a key.</p>
+    <div class="progress"><div class="track"><i></i></div><span class="count">0 of 6 steps done</span></div>
+  </header>
+
+  <ol class="steps col" style="padding-bottom:72px">
+    <li class="step" data-step="install">
+      <span class="n">1</span>
+      <div class="step-body">
+        <h2>Install</h2>
+        <p>You need Python 3.10 or later and <code>ffmpeg</code>. Languages other than English also need the <code>espeak-ng</code> program. The first analysis downloads two speech models of 1.2&nbsp;GB each.</p>
+        <div class="tabs" data-tabs="os">
+          <div class="tablist" role="tablist">
+            <button type="button" role="tab" data-tab="linux">Linux</button>
+            <button type="button" role="tab" data-tab="mac">macOS</button>
+            <button type="button" role="tab" data-tab="docker">Docker</button>
+          </div>
+          <div class="code" data-panel="linux"><pre><span class="p">$ </span>sudo apt install ffmpeg espeak-ng
+<span class="p">$ </span>python3 -m venv .venv &amp;&amp; . .venv/bin/activate
+<span class="p">$ </span>pip install torch --index-url https://download.pytorch.org/whl/cpu
+<span class="p">$ </span>pip install openpronounce</pre></div>
+          <div class="code" data-panel="mac" hidden><pre><span class="p">$ </span>brew install ffmpeg espeak-ng
+<span class="p">$ </span>python3 -m venv .venv &amp;&amp; . .venv/bin/activate
+<span class="p">$ </span>pip install openpronounce</pre></div>
+          <div class="code" data-panel="docker" hidden><pre><span class="p">$ </span>git clone https://github.com/Halleck45/OpenPronounce &amp;&amp; cd OpenPronounce
+<span class="p">$ </span>docker build -t openpronounce .
+<span class="p">$ </span>docker run -p 8000:8000 openpronounce</pre></div>
+        </div>
+        <p>On Linux, the third line installs the CPU build of PyTorch, which is much smaller than the default. The Docker image includes the models and serves a web demo and the HTTP API on port 8000. On Windows, use Docker or WSL.</p>
+        <button class="done-btn" type="button">Mark as done</button>
+      </div>
+    </li>
+
+    <li class="step" data-step="first">
+      <span class="n">2</span>
+      <div class="step-body">
+        <h2>Score a read sentence</h2>
+        <p>This recording from the project was made for the sentence "Hello, I am a good designer", but the speaker said "developer".</p>
+        <div class="code"><pre><span class="p">$ </span>curl -LO https://raw.githubusercontent.com/Halleck45/OpenPronounce/main/assets/developer.wav
+<span class="p">$ </span>openpronounce developer.wav "Hello, I am a good designer"
+<span class="c">Score        : 36.2/100</span>
+<span class="c">               accuracy 36.6, fluency 55.0, prosodic 45.9</span>
+<span class="c">Warning      : not said: good (scores unreliable)</span>
+<span class="c">Transcription: HELLO I AM A DEVELOPER</span>
+<span class="c">Heard phones : /h ə l oʊ aɪ æ m ə d ɪ v ɛ l ə p ɚ/</span>
+<span class="c">Mispronounced:</span>
+<span class="c">  - good: not said</span>
+<span class="c">  - designer: expected /dɪzaɪnɚ/, heard /vɛləpɚ/ (confidence 89%)</span></pre></div>
+        <p>Then try a recording of your own voice. It reads wav, mp3, flac, ogg and webm.</p>
+        <button class="done-btn" type="button">Mark as done</button>
+      </div>
+    </li>
+
+    <li class="step" data-step="free">
+      <span class="n">3</span>
+      <div class="step-body">
+        <h2>Score free speech</h2>
+        <p>Without a sentence, the recording is transcribed, cut at its pauses and scored part by part.</p>
+        <div class="code"><pre><span class="p">$ </span>curl -LO https://raw.githubusercontent.com/Halleck45/OpenPronounce/main/assets/harvard.wav
+<span class="p">$ </span>openpronounce harvard.wav
+<span class="c">Score        : 78.2/100</span>
+<span class="c">               accuracy 81.5, fluency 78.8, prosodic 77.5</span>
+<span class="c">Transcription: the stale smell of old bear lingers it takes heat to bring out the odor ...</span>
+<span class="c">Speech       : 15.9 s in 4 segment(s)</span></pre></div>
+        <button class="done-btn" type="button">Mark as done</button>
+      </div>
+    </li>
+
+    <li class="step" data-step="python">
+      <span class="n">4</span>
+      <div class="step-body">
+        <h2>Call it from Python</h2>
+        <p><code>assess</code> handles both cases. It takes a 16&nbsp;kHz mono waveform and returns a dictionary that serialises to JSON.</p>
+        <div class="code"><pre><span class="k">from</span> openpronounce <span class="k">import</span> load_audio, assess
+
+result = assess(load_audio(<span class="s">"developer.wav"</span>), <span class="s">"Hello, I am a good designer"</span>)
+
+result[<span class="s">"scores"</span>]      <span class="c"># {'total': 36.2, 'accuracy': 36.6, 'fluency': 55.0, 'prosodic': 45.9}</span>
+result[<span class="s">"reliable"</span>]    <span class="c"># False</span>
+result[<span class="s">"reasons"</span>]     <span class="c"># ['not said: good']</span>
+
+<span class="k">for</span> word <span class="k">in</span> result[<span class="s">"differences"</span>][<span class="s">"errors"</span>]:
+    print(word[<span class="s">"word"</span>], word[<span class="s">"expected"</span>], word[<span class="s">"actual"</span>], word.get(<span class="s">"missing"</span>, <span class="k">False</span>))
+<span class="c"># good ɡʊd dɪ True</span>
+<span class="c"># designer dɪzaɪnɚ vɛləpɚ False</span></pre></div>
+        <p>Pass <code>lang="fr"</code> for French, and so on. The <a href="docs/results.html">result reference</a> describes every field.</p>
+        <button class="done-btn" type="button">Mark as done</button>
+      </div>
+    </li>
+
+    <li class="step" data-step="http">
+      <span class="n">5</span>
+      <div class="step-body">
+        <h2>Call it over HTTP</h2>
+        <p>With the Docker image running, your web or mobile front end sends the recording and receives the same JSON.</p>
+        <div class="tabs" data-tabs="http">
+          <div class="tablist" role="tablist">
+            <button type="button" role="tab" data-tab="curl">curl</button>
+            <button type="button" role="tab" data-tab="js">JavaScript</button>
+          </div>
+          <div class="code" data-panel="curl"><pre><span class="p">$ </span>curl -F file=@developer.wav -F expected_text="Hello, I am a good designer" \
+       http://localhost:8000/pronunciation
+<span class="p">$ </span>curl -F file=@harvard.wav http://localhost:8000/free</pre></div>
+          <div class="code" data-panel="js" hidden><pre><span class="k">const</span> form = <span class="k">new</span> FormData();
+form.append(<span class="s">"file"</span>, recordingBlob, <span class="s">"answer.webm"</span>);
+form.append(<span class="s">"expected_text"</span>, <span class="s">"Hello, I am a good designer"</span>);
+
+<span class="k">const</span> result = <span class="k">await</span> (<span class="k">await</span> fetch(<span class="s">"/pronunciation"</span>, { method: <span class="s">"POST"</span>, body: form })).json();</pre></div>
+        </div>
+        <p>The running server documents itself on <code>/docs</code>. See also <a href="docs/http-api.html">the endpoints</a>.</p>
+        <button class="done-btn" type="button">Mark as done</button>
+      </div>
+    </li>
+
+    <li class="step" data-step="show">
+      <span class="n">6</span>
+      <div class="step-body">
+        <h2>Show the result to your users</h2>
+        <p>Check <code>reliable</code> before anything else. When it is false, ask the speaker to try again and tell them why, using <code>reasons</code>.</p>
+        <p>Show the total as a band rather than a decimal: 76.6 and 78.1 describe the same performance. Then list two or three flagged words, each with a button that replays it from its <code>start</code> to its <code>end</code>, next to a native reading.</p>
+        <p class="note">If the product is closed source, it needs a <a href="pricing.html">commercial licence</a> before it reaches users. Development and testing are covered by the AGPL.</p>
+        <button class="done-btn" type="button">Mark as done</button>
+      </div>
+    </li>
+  </ol>
+</div>
+
+<section class="block">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Next: measure it on your own recordings</h2>
+      <p class="soft">The published figures come from one group of speakers. A CSV of recordings scored by your own assessors and one command tell you how it does on yours.</p>
+      <div class="actions"><a class="btn" href="docs/evaluate.html">Measure it on your data</a><a class="btn btn-line" href="docs/index.html">Documentation</a></div>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="developers.html">Installation guide</a></li>
+        <li><a href="teams.html">For teams</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="docs/install.html">Installation</a></li>
+        <li><a href="docs/results.html">Reading a result</a></li>
+        <li><a href="docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="docs/limits.html">What it does not do</a></li>
+        <li><a href="faq.html">Questions and answers</a></li>
+        <li><a href="governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="docs/licensing.html">Which licence you need</a></li>
+        <li><a href="buy.html">Buy a licence</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

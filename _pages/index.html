@@ -1,0 +1,226 @@
+<!-- {"title": "OpenPronounce", "description": "Pronunciation assessment that runs on your own servers: the scores trained raters would give, the words and sounds that went wrong, with or without the expected sentence.", "scripts": ["assets/demo-data.js"]} -->
+<div class="wrap">
+  <header class="page-head">
+    <h1>Pronunciation assessment that runs on your own servers</h1>
+    <p class="lead">OpenPronounce listens to a recording of someone speaking and returns the scores that trained raters would have given it, along with the words and sounds that went wrong. It works whether or not you know the sentence the speaker was meant to say. The code and the models are open source, and the recordings never leave your servers.</p>
+    <div class="actions">
+      <a class="btn" href="developers.html">Install it</a>
+      <a class="btn btn-line" href="teams.html">Evaluate it for a product</a>
+    </div>
+    <p class="install-line">$ <b>pip install openpronounce</b></p>
+  </header>
+
+  <figure class="sheet" id="stage">
+    <div class="sheet-head">
+      <div class="seg" role="tablist" aria-label="Example recording">
+        <button type="button" role="tab" data-mode="read" aria-selected="true">Sentence to read</button>
+        <button type="button" role="tab" data-mode="free" aria-selected="false">Free speech</button>
+      </div>
+      <span class="stage-label"></span>
+    </div>
+    <div class="sheet-body">
+      <div class="reading">
+        <div class="player">
+          <button class="play" type="button" aria-label="Play the recording"></button>
+          <div class="wave"><canvas role="img" aria-label="Waveform of the recording; the parts that went wrong are in red"></canvas></div>
+        </div>
+        <p class="said-row"></p>
+        <div class="notes"></div>
+      </div>
+      <div class="margin">
+        <div class="grade" aria-label="Overall score">
+          <svg viewBox="0 0 116 86" aria-hidden="true"><path d="M60 8C28 6 8 22 9 44c1 22 26 36 54 34 28-2 46-18 44-38C105 20 84 9 56 10c-9 0-17 2-24 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="big-score"></span>
+        </div>
+        <div class="dims">
+          <div class="dim"><span>Accuracy</span><b></b></div>
+          <div class="dim"><span>Fluency</span><b></b></div>
+          <div class="dim"><span>Prosody</span><b></b></div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="stage-foot">Two recordings that ship with the project, scored by the current version. Press play to listen.</figcaption>
+  </figure>
+</div>
+
+<section class="block" style="margin-top:clamp(48px,7vw,80px)" id="cases">
+  <div class="wrap">
+    <h2>The questions it answers</h2>
+    <p class="prose soft">People rarely want a pronunciation score for its own sake. They want to know whether they will be understood. Four situations where a product built on OpenPronounce gives the answer.</p>
+    <div class="cases">
+      <article class="case">
+        <p class="ask">“Will customers understand this candidate on the phone?”</p>
+        <div class="case-body">
+          <h3>Hiring for a call centre</h3>
+          <p>Each candidate answers one question over the phone for a minute or two. OpenPronounce returns a score and the words that came out unclear. The recruiter then listens first to the candidates close to the threshold, instead of to all of them.</p>
+          <p>A phone line costs 3 to 4 points against a good microphone, so compare candidates recorded the same way, and set the threshold from candidates your team has already judged. The decision stays with a person.</p>
+          <p class="pen">90 seconds of free speech</p>
+        </div>
+      </article>
+      <article class="case">
+        <p class="ask">“Will my new colleagues understand me?”</p>
+        <div class="case-body">
+          <h3>Joining a team in another country</h3>
+          <p>Before moving to the London office, an engineer reads the sentences they will really say: introducing themselves, explaining a deployment, asking for help. Each flagged word comes back with the sounds expected, the sounds heard, and the moment to replay.</p>
+          <p>The words that come back flagged week after week are the ones to work on before the first stand-up.</p>
+          <p class="pen">the sentences of a real working day</p>
+        </div>
+      </article>
+      <article class="case">
+        <p class="ask">“Will the room follow my talk?”</p>
+        <div class="case-body">
+          <h3>Before a presentation</h3>
+          <p>Record the rehearsal, all of it. OpenPronounce cuts it at the pauses and scores each part. The parts where the score drops are the ones to rehearse again, and the unclear words say what to fix in them.</p>
+          <p class="pen">a whole rehearsal, cut at its pauses</p>
+        </div>
+      </article>
+      <article class="case">
+        <p class="ask">“Am I getting better?”</p>
+        <div class="case-body">
+          <h3>Following progress</h3>
+          <p>A single recording says little: two takes of the same sentence can differ by a couple of points. Record the same few sentences every week and compare the averages month to month.</p>
+          <p>Averaged over ten recordings, the free-speech score ranks speakers at 0.88 against expert raters. Week after week, the flagged words show which sounds have stopped going wrong.</p>
+          <p class="pen">same sentences, every week</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>What a result contains</h2>
+    <p class="prose soft">Each recording comes back as one JSON document. These are the parts you will use most.</p>
+    <dl class="defs">
+      <dt>Four scores</dt><dd>Overall, accuracy, fluency and prosody, from 0 to 100. They reproduce the ratings that five expert raters gave on a 0 to 10 scale, multiplied by ten.</dd>
+      <dt>The words to work on</dt><dd>For each word judged mispronounced, the sounds expected and the sounds heard, in IPA, with the time of each sound in the recording. Skipped words and added speech are listed separately.</dd>
+      <dt>A reliability flag</dt><dd><code>reliable</code> is false when the recording does not match the sentence, when words are missing, when there is too little speech, or when the audio is clipped, noisy or too quiet. The reasons come in plain text.</dd>
+      <dt>The transcript</dt><dd>What was said, word by word, with timings.</dd>
+    </dl>
+    <p class="soft">Every field is described in <a href="docs/results.html">the documentation</a>.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="split">
+      <div class="prose">
+        <h2>Read-aloud sentences and free speech</h2>
+        <p class="soft">When the speaker reads a known sentence, you pass that sentence. OpenPronounce aligns each expected sound on the recording, which is how it can say which word went wrong and how.</p>
+        <p class="soft">For an open answer or a presentation there is no sentence to pass. OpenPronounce transcribes the recording, cuts it at its pauses and scores each part. Since it cannot know which word the speaker intended, it reports words that came out unclear rather than mispronounced.</p>
+      </div>
+      <div class="tabs" data-tabs="home-mode">
+        <div class="tablist" role="tablist">
+          <button type="button" role="tab" data-tab="read">With the sentence</button>
+          <button type="button" role="tab" data-tab="free">Without</button>
+        </div>
+        <div class="code" data-panel="read"><pre><span class="k">from</span> openpronounce <span class="k">import</span> load_audio, assess
+
+audio = load_audio(<span class="s">"answer.wav"</span>)
+result = assess(audio, <span class="s">"Hello, I am a good designer"</span>)
+result[<span class="s">"score"</span>]          <span class="c"># 36.2</span>
+result[<span class="s">"reasons"</span>]        <span class="c"># ['not said: good']</span></pre></div>
+        <div class="code" data-panel="free" hidden><pre><span class="k">from</span> openpronounce <span class="k">import</span> load_audio, assess
+
+result = assess(load_audio(<span class="s">"talk.wav"</span>))
+result[<span class="s">"score"</span>]          <span class="c"># 78.2</span>
+result[<span class="s">"segments"</span>]       <span class="c"># 4 parts, each with its own scores</span></pre></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Agreement with human raters</h2>
+    <p class="prose soft">The models were trained and tested on speechocean762, a public corpus of 5,000 English recordings by non-native speakers, each rated by five experts. The bars show the Pearson correlation between OpenPronounce's overall score and the raters' average, on the 2,500 test recordings, whose speakers were kept out of training.</p>
+    <div class="figure">
+      <div class="key"><span>Sentence known</span><span class="free">Free speech</span></div>
+      <div class="bars">
+        <div class="who">Adults<small>1,220 recordings</small></div>
+        <div class="pair-bars"><div class="hb"><span><i style="width:85%"></i></span>0.85</div><div class="hb free"><span><i style="width:82%"></i></span>0.82</div></div>
+        <div class="who">All speakers<small>2,500 recordings</small></div>
+        <div class="pair-bars"><div class="hb"><span><i style="width:79%"></i></span>0.79</div><div class="hb free"><span><i style="width:71%"></i></span>0.71</div></div>
+        <div class="who">Children, 12 and under<small>1,040 recordings</small></div>
+        <div class="pair-bars"><div class="hb"><span><i style="width:67%"></i></span>0.67</div><div class="hb free"><span><i style="width:42%"></i></span>0.42</div></div>
+      </div>
+    </div>
+    <p class="prose soft">At word level it flags about one word in twenty, and the raters had marked a little more than half of those. It detects 83&nbsp;% of the words a speaker leaves out of a sentence.</p>
+    <div class="split">
+      <p class="prose soft">Your speakers will differ from these. The <code>openpronounce-evaluate</code> command computes the same correlation on recordings your own assessors have scored, with a confidence interval. This is its output on 150 recordings from the test set. <a href="docs/evaluate.html">How to run it on your data</a>.</p>
+      <div class="code" data-nocopy><pre><span class="p">$ </span>openpronounce-evaluate recordings.csv
+<span class="c">150 recordings: 150 compared with a rating</span>
+<span class="c">flagged unreliable: 1, poor recording quality: 0</span>
+<span class="c">all  n=150  Pearson 0.840 [0.78, 0.88]</span>
+<span class="c">to read our score on your scale: yours = 0.1001 x ours + 0.031</span></pre></div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="split">
+      <div class="prose">
+        <h2>Recordings never leave your servers</h2>
+        <p class="soft">A voice recording is personal data. Sent to a cloud API, each one goes to a vendor: one more processor in your privacy policy, a contract to sign, sometimes a transfer outside the European Union. OpenPronounce runs on your own machines, an ordinary CPU server is enough, and the recordings go nowhere else. Once the speech models are downloaded, it runs without network access.</p>
+        <p class="soft">One default needs to be known: the first time a sentence is analysed, its text (never the audio) is sent to Google's speech synthesis to build a reference reading. <a href="docs/configuration.html">One setting turns it off</a>.</p>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>16-thread CPU, no GPU</th><th class="num">Audio</th><th class="num">Time</th></tr></thead>
+          <tbody>
+            <tr><td>Sentence, quick mode</td><td class="num">2 s</td><td class="num">0.45 s</td></tr>
+            <tr><td>Sentence, full analysis</td><td class="num">18 s</td><td class="num">6.2 s</td></tr>
+            <tr><td>Free speech</td><td class="num">3 min</td><td class="num">52 s</td></tr>
+          </tbody>
+        </table>
+        <p class="small soft" style="margin-top:10px">About 4&nbsp;GB of memory.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Compared with a cloud API</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th></th><th>Cloud pronunciation API</th><th>OpenPronounce</th></tr></thead>
+        <tbody>
+          <tr><td>Where recordings are processed</td><td>On the provider's servers</td><td>On yours</td></tr>
+          <tr><td>Pricing</td><td>Per minute or per request</td><td>Free under the AGPL, or a yearly licence with no volume limit</td></tr>
+          <tr><td>Agreement with raters</td><td>As published by the vendor</td><td>Published with the scripts that reproduce it</td></tr>
+          <tr><td>Offline use</td><td>No</td><td>Yes, after the first model download</td></tr>
+          <tr><td>Source code and models</td><td>Closed</td><td>Open</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="soft">The page for teams has <a href="teams.html#cost">a cost comparison</a> where you enter your own volume and price.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Known limits</h2>
+    <ul class="prose soft">
+      <li>It judges pronunciation only, not grammar, vocabulary or content.</li>
+      <li>Without a sentence, it does poorly on children of 12 and under (0.42). Have them read a sentence instead.</li>
+      <li>English is the only language measured against human raters. French, Spanish, German, Italian, Portuguese and Dutch are checked on native speakers only.</li>
+      <li>Any sample rate is accepted, including 8&nbsp;kHz phone audio. A score taken over the phone differs from one taken on a good microphone by 3 to 4 points on average.</li>
+      <li>There is no maximum length: long recordings are cut at their pauses. In free speech, under 3 seconds of speech or four words, the result is marked unreliable.</li>
+    </ul>
+    <p class="soft">The <a href="docs/limits.html">full list</a> gives the figures behind each point.</p>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="prose">
+      <h2>Open source</h2>
+      <p class="soft">The code, the models and the scripts that trained them are published under the AGPL-3.0. They are free for research and evaluation, and for any product whose source code is published under the same licence. Nothing is held back: the version companies pay for is the one anyone can read.</p>
+      <p class="soft">A product whose source code stays closed takes a yearly licence, priced by the size of the company, from 1,200&nbsp;&euro; a year. It funds the maintenance of OpenPronounce and the work on new languages.</p>
+      <p class="soft"><a href="governance.html">How the project is run</a>.</p>
+      <div class="actions"><a class="btn" href="pricing.html">Pricing</a><a class="btn btn-line" href="docs/licensing.html">Which licence applies to you</a></div>
+    </div>
+  </div>
+</section>

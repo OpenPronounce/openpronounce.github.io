@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contact</title>
+<meta name="description" content="Write to the author of OpenPronounce: questions before buying, Enterprise quotes, non-profits, evaluation reports.">
+<link rel="canonical" href="https://openpronounce.github.io/contact.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Contact">
+<meta property="og:description" content="Write to the author of OpenPronounce: questions before buying, Enterprise quotes, non-profits, evaluation reports.">
+<meta property="og:url" content="https://openpronounce.github.io/contact.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="developers.html">Developers</a>
+      <a href="teams.html">For teams</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="faq.html">FAQ</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap">
+  <header class="page-head col">
+    <h1>Contact</h1>
+    <p class="lead">Messages are answered within two working days. Bug reports and feature requests are better placed on <a href="https://github.com/Halleck45/OpenPronounce/issues">GitHub</a>, where other users can see the answer.</p>
+  </header>
+  <div class="split" style="padding-bottom:88px">
+    <div>
+      <form class="form" id="contact" novalidate>
+        <div class="field"><label for="topic">Subject</label>
+          <select id="topic" name="topic">
+            <option>Question before buying</option>
+            <option>Enterprise licence</option>
+            <option>Non-profit or public body</option>
+            <option>Evaluation report</option>
+            <option>Other</option>
+          </select></div>
+        <div class="grid-2">
+          <div class="field"><label for="name">Name</label><input id="name" name="fullname" type="text" required autocomplete="name"></div>
+          <div class="field"><label for="reply">Email</label><input id="reply" name="reply" type="email" required autocomplete="email"></div>
+        </div>
+        <div class="field"><label for="org">Company or organisation</label><input id="org" name="company" type="text" autocomplete="organization"></div>
+        <div class="field"><label for="message">Message</label><textarea id="message" name="message" required></textarea><span class="hint">What you are building, for which speakers and languages, and what you need to know.</span></div>
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <div><button class="btn" type="submit">Send the message</button></div>
+        <p class="hint form-error" role="alert" hidden></p>
+      </form>
+      <div class="answer" id="contact-done" hidden tabindex="-1">
+        <h3>Message sent</h3>
+        <p class="soft">The answer will come to <strong class="addr"></strong>, within two working days.</p>
+      </div>
+    </div>
+    <aside class="side">
+      <h3>Before you write</h3>
+      <p class="soft small">For an Enterprise quote, say how many products would ship OpenPronounce and roughly how many recordings a day they handle.</p>
+      <p class="soft small" data-email-block hidden>Or write directly to <a data-email href="#"></a>.</p>
+    </aside>
+  </div>
+</div>
+</main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="developers.html">Installation guide</a></li>
+        <li><a href="teams.html">For teams</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="docs/install.html">Installation</a></li>
+        <li><a href="docs/results.html">Reading a result</a></li>
+        <li><a href="docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="docs/limits.html">What it does not do</a></li>
+        <li><a href="faq.html">Questions and answers</a></li>
+        <li><a href="governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="docs/licensing.html">Which licence you need</a></li>
+        <li><a href="buy.html">Buy a licence</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="assets/config.js"></script>
+<script src="assets/site.js"></script>
+</body>
+</html>

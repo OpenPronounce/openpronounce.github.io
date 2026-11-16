@@ -1,0 +1,20 @@
+<!-- {"title": "OpenPronounce documentation", "description": "Install OpenPronounce, score read and free speech, read the result, serve it over HTTP and measure it on your own data.", "nav": "docs"} -->
+<h1>Introduction</h1>
+<p class="lead">OpenPronounce listens to a recording of someone speaking and returns what a trained rater would say about the pronunciation.</p>
+<p>It works in two modes. When you know the sentence the speaker was asked to read, it compares every sound with the expected one and reports the words that went wrong, the words that were not said and the speech in excess. When you do not, it transcribes the recording, cuts it at its pauses and scores each part.</p>
+<p>Both modes return the same four scores on 0 to 100, learned from human ratings:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Score</th><th>What the raters judged</th></tr></thead>
+<tbody>
+<tr><td><code>total</code></td><td>The overall impression</td></tr>
+<tr><td><code>accuracy</code></td><td>Whether the sounds are the right ones</td></tr>
+<tr><td><code>fluency</code></td><td>Pace, pauses, hesitations</td></tr>
+<tr><td><code>prosodic</code></td><td>Stress, rhythm and intonation</td></tr>
+</tbody></table></div>
+<p>The scale is the raters' 0 to 10, times ten. A good non-native reading of a sentence sits around 80. A native speaker reading a long sentence gets about 75, because the raters kept their top marks for perfect takes.</p>
+<h2>Where to go next</h2>
+<ul>
+<li><a href="install.html">Install it</a>, then score <a href="read-speech.html">a sentence</a> or <a href="free-speech.html">free speech</a>.</li>
+<li>Check what each field of <a href="results.html">a result</a> means before you show it to anyone.</li>
+<li>Before you rely on it, <a href="evaluate.html">measure it on your own recordings</a> and read <a href="limits.html">what it does not do</a>.</li>
+</ul>

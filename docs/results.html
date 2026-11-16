@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reading an OpenPronounce result</title>
+<meta name="description" content="Every field of a read-speech and a free-speech result, with real output.">
+<link rel="canonical" href="https://openpronounce.github.io/docs/results.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Reading an OpenPronounce result">
+<meta property="og:description" content="Every field of a read-speech and a free-speech result, with real output.">
+<meta property="og:url" content="https://openpronounce.github.io/docs/results.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../developers.html">Developers</a>
+      <a href="../teams.html">For teams</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="../developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap"><div class="docs"><nav class="docs-nav" aria-label="Documentation"><div><h4>Getting started</h4><ul><li><a href="../docs/index.html">Introduction</a></li><li><a href="../docs/install.html">Installation</a></li></ul></div><div><h4>Using it</h4><ul><li><a href="../docs/read-speech.html">A sentence to read</a></li><li><a href="../docs/free-speech.html">Free speech</a></li><li><a href="../docs/results.html" aria-current="page">Reading a result</a></li><li><a href="../docs/http-api.html">HTTP API and Docker</a></li><li><a href="../docs/configuration.html">Configuration</a></li></ul></div><div><h4>Trusting it</h4><ul><li><a href="../docs/evaluate.html">Measure it on your data</a></li><li><a href="../docs/languages.html">Languages</a></li><li><a href="../docs/limits.html">What it does not do</a></li><li><a href="../docs/how-it-works.html">How it works</a></li></ul></div><div><h4>Licensing</h4><ul><li><a href="../docs/licensing.html">Which licence you need</a></li></ul></div></nav><article class="doc"><h1>Reading a result</h1>
+<p class="lead">A result is a JSON document. Check <code>reliable</code> before using the scores, and the scores before the words.</p>
+<h2>A real result, shortened</h2>
+<div class="code"><pre>{
+  <span class="k">"score"</span>: 36.2,
+  <span class="k">"scores"</span>: { <span class="k">"total"</span>: 36.2, <span class="k">"accuracy"</span>: 36.6, <span class="k">"fluency"</span>: 55.0, <span class="k">"prosodic"</span>: 45.9 },
+  <span class="k">"reliable"</span>: false,
+  <span class="k">"reasons"</span>: [<span class="s">"not said: good"</span>],
+  <span class="k">"differences"</span>: {
+    <span class="k">"errors"</span>: [
+      { <span class="k">"word"</span>: <span class="s">"good"</span>, <span class="k">"position"</span>: 4, <span class="k">"expected"</span>: <span class="s">"ɡʊd"</span>, <span class="k">"actual"</span>: <span class="s">"dɪ"</span>, <span class="k">"confidence"</span>: 0.879, <span class="k">"missing"</span>: true, <span class="k">"phones"</span>: [...] },
+      { <span class="k">"word"</span>: <span class="s">"designer"</span>, <span class="k">"position"</span>: 5, <span class="k">"expected"</span>: <span class="s">"dɪzaɪnɚ"</span>, <span class="k">"actual"</span>: <span class="s">"vɛləpɚ"</span>, <span class="k">"confidence"</span>: 0.886,
+        <span class="k">"phones"</span>: [ { <span class="k">"expected"</span>: <span class="s">"d"</span>, <span class="k">"heard"</span>: <span class="s">"v"</span>, <span class="k">"confidence"</span>: 0.643, <span class="k">"start"</span>: 1.02, <span class="k">"end"</span>: 1.04 }, ... ] }
+    ],
+    <span class="k">"alignment"</span>: { <span class="k">"sentence_probability"</span>: 0.078, <span class="k">"reliable"</span>: false, ... }
+  },
+  <span class="k">"audio_quality"</span>: { <span class="k">"duration"</span>: 2.926, <span class="k">"level_db"</span>: -43.1, <span class="k">"snr_db"</span>: 31.3, <span class="k">"issues"</span>: [] }
+}</pre></div>
+<h2>Read speech</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>score</code></td><td>0 to 100, the <code>total</code> of <code>scores</code></td></tr>
+<tr><td><code>scores</code></td><td><code>total</code>, <code>accuracy</code>, <code>fluency</code>, <code>prosodic</code>, ten times the raters' 0 to 10 scale</td></tr>
+<tr><td><code>reliable</code>, <code>reasons</code></td><td>False when the recording does not match the sentence, when words were not said, when much was said in excess or when the audio is unfit. The scores are still there; do not show them as they are.</td></tr>
+<tr><td><code>transcribe</code></td><td>What the word recognizer heard</td></tr>
+<tr><td><code>differences.errors[]</code></td><td>One entry per word that went wrong: <code>word</code>, <code>position</code>, <code>expected</code> and <code>actual</code> sounds in IPA, <code>confidence</code> (probability the raters would reject it), <code>phones[]</code> with each sound's <code>expected</code>, <code>heard</code>, <code>confidence</code>, <code>start</code>, <code>end</code>, and <code>missing</code> when the word was not said</td></tr>
+<tr><td><code>differences.words[]</code></td><td>The same for every word, flagged or not, with its time span and <code>mispronounced</code></td></tr>
+<tr><td><code>differences.extra[]</code></td><td>Speech that is not in the sentence: <code>after</code>, <code>before</code> (positions around it), <code>start</code>, <code>end</code>, <code>heard</code></td></tr>
+<tr><td><code>differences.alignment</code></td><td>Whether the recording is a reading of the sentence at all: <code>sentence_probability</code>, <code>reliable</code></td></tr>
+<tr><td><code>differences.heard_phones</code></td><td>Every sound recognised in the audio</td></tr>
+<tr><td><code>audio_quality</code></td><td><code>duration</code>, <code>level_db</code>, <code>clipping_ratio</code>, <code>snr_db</code> and <code>issues</code>: <code>too_short</code>, <code>silent</code>, <code>too_quiet</code>, <code>clipped</code>, <code>noisy</code></td></tr>
+<tr><td><code>prosody</code></td><td>Pitch and loudness curves, ready to draw</td></tr>
+<tr><td><code>formula_score</code>, <code>acoustic_distance</code></td><td>The formula of versions before 0.4 and its distance to a synthetic native reading, kept for comparison</td></tr>
+</tbody></table></div>
+<h2>Free speech</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Field</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>mode</code></td><td><code>"free"</code></td></tr>
+<tr><td><code>score</code>, <code>scores</code></td><td>The same four dimensions, averaged over the segments by duration</td></tr>
+<tr><td><code>transcribe</code></td><td>The transcript everything is measured against</td></tr>
+<tr><td><code>words[]</code></td><td>Every word with <code>start</code>, <code>end</code> (seconds in the whole recording), <code>confidence</code> that it was unclear, <code>unclear</code>, <code>expected</code> and <code>heard</code></td></tr>
+<tr><td><code>unclear_words</code></td><td>The words above the threshold</td></tr>
+<tr><td><code>segments[]</code></td><td>The parts cut at the pauses, each with <code>start</code>, <code>end</code>, <code>transcribe</code>, <code>scores</code></td></tr>
+<tr><td><code>duration</code>, <code>speech_duration</code></td><td>Seconds</td></tr>
+<tr><td><code>audio_quality</code>, <code>reliable</code>, <code>reasons</code></td><td>As for read speech; <code>reliable</code> is false when there is too little speech</td></tr>
+</tbody></table></div>
+<h2>Showing it to your users</h2>
+<p>Turn the total into a band rather than a decimal: two scores a few points apart are the same performance. Bands that read well: 90 and above excellent, 70 to 89 good, 50 to 69 understandable with clear errors, under 50 hard to follow. Then list at most three flagged words, with a button that replays each one from its <code>start</code> to its <code>end</code>.</p>
+<div class="pager"><a class="prev" href="../docs/free-speech.html"><small>Previous</small>Free speech</a><a class="next" href="../docs/http-api.html"><small>Next</small>HTTP API and Docker</a></div></article></div></div></main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="../developers.html">Installation guide</a></li>
+        <li><a href="../teams.html">For teams</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="../docs/install.html">Installation</a></li>
+        <li><a href="../docs/results.html">Reading a result</a></li>
+        <li><a href="../docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="../docs/limits.html">What it does not do</a></li>
+        <li><a href="../faq.html">Questions and answers</a></li>
+        <li><a href="../governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="../docs/licensing.html">Which licence you need</a></li>
+        <li><a href="../buy.html">Buy a licence</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Configure OpenPronounce</title>
+<meta name="description" content="Environment variables: device, reference voice, models directory, offline use.">
+<link rel="canonical" href="https://openpronounce.github.io/docs/configuration.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Configure OpenPronounce">
+<meta property="og:description" content="Environment variables: device, reference voice, models directory, offline use.">
+<meta property="og:url" content="https://openpronounce.github.io/docs/configuration.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../developers.html">Developers</a>
+      <a href="../teams.html">For teams</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="../developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap"><div class="docs"><nav class="docs-nav" aria-label="Documentation"><div><h4>Getting started</h4><ul><li><a href="../docs/index.html">Introduction</a></li><li><a href="../docs/install.html">Installation</a></li></ul></div><div><h4>Using it</h4><ul><li><a href="../docs/read-speech.html">A sentence to read</a></li><li><a href="../docs/free-speech.html">Free speech</a></li><li><a href="../docs/results.html">Reading a result</a></li><li><a href="../docs/http-api.html">HTTP API and Docker</a></li><li><a href="../docs/configuration.html" aria-current="page">Configuration</a></li></ul></div><div><h4>Trusting it</h4><ul><li><a href="../docs/evaluate.html">Measure it on your data</a></li><li><a href="../docs/languages.html">Languages</a></li><li><a href="../docs/limits.html">What it does not do</a></li><li><a href="../docs/how-it-works.html">How it works</a></li></ul></div><div><h4>Licensing</h4><ul><li><a href="../docs/licensing.html">Which licence you need</a></li></ul></div></nav><article class="doc"><h1>Configuration</h1>
+<p class="lead">Everything is set through environment variables. The defaults suit a first try.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Variable</th><th>Default</th><th>Effect</th></tr></thead>
+<tbody>
+<tr><td><code>OPENPRONOUNCE_DEVICE</code></td><td>auto</td><td><code>cpu</code>, <code>cuda</code>, <code>cuda:1</code>, <code>mps</code></td></tr>
+<tr><td><code>OPENPRONOUNCE_TTS</code></td><td><code>gtts</code></td><td>Voice of the synthetic reference reading: <code>gtts</code> (network on the first analysis of a sentence), <code>piper</code> or <code>kokoro</code> (offline)</td></tr>
+<tr><td><code>OPENPRONOUNCE_TTS_VOICE</code></td><td>per engine</td><td>Voice id, such as <code>en_GB-cori-medium</code> or <code>af_heart</code></td></tr>
+<tr><td><code>OPENPRONOUNCE_MODELS_DIR</code></td><td>none</td><td>Folders searched for model files before the shipped ones: add a language or replace a model</td></tr>
+<tr><td><code>OPENPRONOUNCE_G2P</code></td><td>per language</td><td><code>lexicon</code> (English, CMU dictionary) or <code>espeak</code></td></tr>
+<tr><td><code>OPENPRONOUNCE_ESPEAK</code></td><td><code>espeak-ng</code></td><td>Path of the espeak-ng program</td></tr>
+<tr><td><code>OPENPRONOUNCE_PHONEME_MODEL</code></td><td>on</td><td><code>off</code> skips the sound recognizer; word errors then come from the transcription, less precise</td></tr>
+<tr><td><code>OPENPRONOUNCE_CACHE_DIR</code></td><td>system temp</td><td>Where synthetic references are cached</td></tr>
+<tr><td><code>HF_HOME</code></td><td><code>~/.cache/huggingface</code></td><td>Where the speech models live</td></tr>
+<tr><td><code>HF_HUB_OFFLINE</code></td><td>unset</td><td><code>1</code> once the models are there: nothing is fetched any more</td></tr>
+</tbody></table></div>
+<h2>Fully offline</h2>
+<p>Two things reach the network by default: the model download on the first run, and the text of the expected sentence sent to Google's speech synthesis the first time that sentence is analysed. The audio is never sent. To cut both:</p>
+<div class="code"><pre><span class="p">$ </span>pip install "openpronounce[tts-piper]"
+<span class="p">$ </span>export OPENPRONOUNCE_TTS=piper HF_HUB_OFFLINE=1</pre></div>
+<p>Run once with the network to fetch the models and the voice, then unplug it. <code>--fast</code> or <code>acoustic=False</code> skip the synthetic reading altogether.</p>
+<div class="pager"><a class="prev" href="../docs/http-api.html"><small>Previous</small>HTTP API and Docker</a><a class="next" href="../docs/evaluate.html"><small>Next</small>Measure it on your data</a></div></article></div></div></main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="../developers.html">Installation guide</a></li>
+        <li><a href="../teams.html">For teams</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="../docs/install.html">Installation</a></li>
+        <li><a href="../docs/results.html">Reading a result</a></li>
+        <li><a href="../docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="../docs/limits.html">What it does not do</a></li>
+        <li><a href="../faq.html">Questions and answers</a></li>
+        <li><a href="../governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="../docs/licensing.html">Which licence you need</a></li>
+        <li><a href="../buy.html">Buy a licence</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

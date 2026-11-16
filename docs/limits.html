@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>What OpenPronounce does not do</title>
+<meta name="description" content="The known limits of OpenPronounce, with figures: who it was trained on, children, free speech, phone audio, other languages.">
+<link rel="canonical" href="https://openpronounce.github.io/docs/limits.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="What OpenPronounce does not do">
+<meta property="og:description" content="The known limits of OpenPronounce, with figures: who it was trained on, children, free speech, phone audio, other languages.">
+<meta property="og:url" content="https://openpronounce.github.io/docs/limits.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../developers.html">Developers</a>
+      <a href="../teams.html">For teams</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a class="btn" href="../developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap"><div class="docs"><nav class="docs-nav" aria-label="Documentation"><div><h4>Getting started</h4><ul><li><a href="../docs/index.html">Introduction</a></li><li><a href="../docs/install.html">Installation</a></li></ul></div><div><h4>Using it</h4><ul><li><a href="../docs/read-speech.html">A sentence to read</a></li><li><a href="../docs/free-speech.html">Free speech</a></li><li><a href="../docs/results.html">Reading a result</a></li><li><a href="../docs/http-api.html">HTTP API and Docker</a></li><li><a href="../docs/configuration.html">Configuration</a></li></ul></div><div><h4>Trusting it</h4><ul><li><a href="../docs/evaluate.html">Measure it on your data</a></li><li><a href="../docs/languages.html">Languages</a></li><li><a href="../docs/limits.html" aria-current="page">What it does not do</a></li><li><a href="../docs/how-it-works.html">How it works</a></li></ul></div><div><h4>Licensing</h4><ul><li><a href="../docs/licensing.html">Which licence you need</a></li></ul></div></nav><article class="doc"><h1>What it does not do</h1>
+<p class="lead">These limits were measured; the figures come with them. Read them before showing scores to your users.</p>
+<h2>It learned from one population</h2>
+<p>Non-native speakers of English from a single corpus, half of them children, reading sentences of 2 to 12 words. The scores follow their raters: a clean adult reading gets about 80, not 100, and an accent from elsewhere is less well covered. <a href="evaluate.html">Measure what that costs on your own speakers</a>.</p>
+<h2>Children are scored less well</h2>
+<p>The speech models were trained on adults. With the sentence, the score follows the raters at 0.85 for adults and 0.67 for children of 12 and under. Without it, 0.82 and 0.42. Do not use free speech with children.</p>
+<h2>Free speech was measured on read sentences</h2>
+<p>No rated corpus of spontaneous speech can be used. The free-speech figures come from read sentences with their text hidden. On 22-second recordings of adults, the scores follow the raters at about 0.75. Without the text, words are reported as unclear, never as mispronounced.</p>
+<h2>Hesitation lowers the score, even for natives</h2>
+<p>A pause or a restart is a fault in a read sentence, and that is what the scorer learned. Natives talking freely on the radio score 66 to 67 where natives reading score 72. Expect the same for any fluent speaker who thinks while speaking.</p>
+<h2>Fast native speech is not rewarded</h2>
+<p>The sound recognizer is less sure of fast speech, and the scorer takes that for a lack of clarity. A careful non-native speaker can outscore a native.</p>
+<h2>A missing word is found more surely than an extra one</h2>
+<p>83 in 100 words left out are reported as not said, and 0.7 in 100 words really read are reported by mistake. Speech in excess is located 63 times in 100. A single extra sound, "an developer" for "a developer", goes unnoticed.</p>
+<h2>A phone line moves the score</h2>
+<p>Through a simulated land line (8&nbsp;kHz, narrow band), the scores still follow the raters: 0.78 against 0.81 with the sentence, 0.64 against 0.68 without. But one recording's score moves by 3 to 4 points on average, and a real call adds noise that was not simulated. Do not compare a score taken on the phone with one taken on a microphone.</p>
+<h2>Long sentences are outside what it learned</h2>
+<p>The scorer never saw more than 10 words. Natives get 77 on sentences of up to 12 words, 73 from 20 words up.</p>
+<h2>Only English was measured against raters</h2>
+<p>The six other languages are checked on native speakers, not on rated non-native speech. See <a href="languages.html">Languages</a>.</p>
+<h2>It is lenient where the raters are</h2>
+<p>Function words, word-final consonants, accent traits the raters would not mark: it lets them pass too. The sound recognizer itself mishears about one sound in ten on a clean native reading. A word missing from the English dictionary is pronounced by rule, marked <code>guessed</code>, and never blamed.</p>
+<h2>A bad recording is scored anyway</h2>
+<p>Too quiet, clipped, noisy or too short: <code>audio_quality.issues</code> says so and <code>reliable</code> turns false. Showing the score or not is your call.</p>
+<div class="pager"><a class="prev" href="../docs/languages.html"><small>Previous</small>Languages</a><a class="next" href="../docs/how-it-works.html"><small>Next</small>How it works</a></div></article></div></div></main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="../developers.html">Installation guide</a></li>
+        <li><a href="../teams.html">For teams</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="../docs/install.html">Installation</a></li>
+        <li><a href="../docs/results.html">Reading a result</a></li>
+        <li><a href="../docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="../docs/limits.html">What it does not do</a></li>
+        <li><a href="../faq.html">Questions and answers</a></li>
+        <li><a href="../governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="../docs/licensing.html">Which licence you need</a></li>
+        <li><a href="../buy.html">Buy a licence</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>
