@@ -24,7 +24,7 @@ DOCS = [
                   ("docs/configuration.html", "Configuration")]),
     ("Trusting it", [("docs/evaluate.html", "Measure it on your data"), ("docs/languages.html", "Languages"),
                      ("docs/limits.html", "What it does not do"), ("docs/how-it-works.html", "How it works")]),
-    ("Licensing", [("docs/licensing.html", "Which licence you need")]),
+    ("Licensing", [("docs/licensing.html", "Which licence you need"), ("docs/commercial-licence.html", "Commercial licence terms")]),
 ]
 
 LOGO = ('<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/>'
