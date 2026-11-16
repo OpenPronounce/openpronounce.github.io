@@ -306,7 +306,12 @@
       e.preventDefault();
       if (!order.reportValidity()) return;
       var key = current(), p = LICENCES[key], url = (CONFIG.checkout || {})[key];
-      if (url) { window.location.href = url; return; }
+      if (url) {
+        var q = new URLSearchParams({ customer_email: order.billing.value, "custom_field_data.licensed-product": order.product.value,
+          "custom_field_data.revenue-declaration": "true" });
+        window.location.href = url + (url.indexOf("?") < 0 ? "?" : "&") + q.toString();
+        return;
+      }
       var body = ["Licence: " + p.name + " (" + euro(p.price) + " per year)", "Company: " + order.company.value, "Country: " + order.country.value,
         "Product: " + order.product.value, "Billing email: " + order.billing.value, "Declared: " + p.who].join("\n");
       send(order, {

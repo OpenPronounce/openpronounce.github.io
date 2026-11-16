@@ -11,7 +11,7 @@ window.OP_CONFIG = {
   // Checkout links of the payment provider, one per plan. Empty: the order is
   // sent through the contact form and a payment link is sent back by email.
   checkout: {
-    small: "",
-    business: ""
+    small: "https://buy.polar.sh/polar_cl_3YG2yfh0Gi0rrt4Sv2JQAnvqqEv4iz7OXgyhc0x1maa",
+    business: "https://buy.polar.sh/polar_cl_5YB45zS0fNXTwbszcxGheRNWDt83tiXbDyOPQ0608Zu"
   }
 };
