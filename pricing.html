@@ -123,6 +123,38 @@
     </div>
   </div>
 </section>
+
+<section class="block" id="ask">
+  <div class="wrap">
+    <div class="split" style="padding-bottom:88px">
+      <div>
+        <h2>A question before you order?</h2>
+        <p class="soft" style="margin-top:8px">The author reads and answers every message, by email.</p>
+        <form class="form" id="contact" novalidate>
+          <input type="hidden" name="topic" value="Question before buying">
+          <div class="grid-2">
+            <div class="field"><label for="name">Name</label><input id="name" name="fullname" type="text" required autocomplete="name"></div>
+            <div class="field"><label for="reply">Email</label><input id="reply" name="reply" type="email" required autocomplete="email"></div>
+          </div>
+          <div class="field"><label for="org">Company</label><input id="org" name="company" type="text" autocomplete="organization"></div>
+          <div class="field"><label for="message">Question</label><textarea id="message" name="message" required></textarea><span class="hint">What you are building, and for which speakers and languages, helps give a precise answer.</span></div>
+          <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <div><button class="btn" type="submit">Send the question</button></div>
+          <p class="hint form-error" role="alert" hidden></p>
+        </form>
+        <div class="answer" id="contact-done" hidden tabindex="-1">
+          <h3>Question sent</h3>
+          <p class="soft">The answer will come to <strong class="addr"></strong>.</p>
+        </div>
+      </div>
+      <aside class="side">
+        <h3>Often asked</h3>
+        <p class="soft small">Whether the scores suit your learners: run <a href="docs/evaluate.html">openpronounce-evaluate</a> on a few rated recordings and send the report with your question.</p>
+        <p class="soft small">An Enterprise quote: say how many products would ship OpenPronounce.</p>
+      </aside>
+    </div>
+  </div>
+</section>
 </main>
 <footer class="site-footer">
   <div class="wrap">
