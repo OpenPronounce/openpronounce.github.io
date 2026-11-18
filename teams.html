@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Evaluating OpenPronounce for a product</title>
-<meta name="description" content="Agreement with your own raters, cost compared with a cloud API, where recordings go, error handling, maintenance and a two-week evaluation plan.">
+<meta name="description" content="Agreement with your own raters, where recordings go, error handling, maintenance and a two-week evaluation plan.">
 <link rel="canonical" href="https://openpronounce.github.io/teams.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Evaluating OpenPronounce for a product">
-<meta property="og:description" content="Agreement with your own raters, cost compared with a cloud API, where recordings go, error handling, maintenance and a two-week evaluation plan.">
+<meta property="og:description" content="Agreement with your own raters, where recordings go, error handling, maintenance and a two-week evaluation plan.">
 <meta property="og:url" content="https://openpronounce.github.io/teams.html">
 <meta property="og:image" content="https://openpronounce.github.io/assets/og.png">
 <meta property="og:image:alt" content="OpenPronounce: pronunciation assessment that runs on your own servers">
@@ -46,7 +46,7 @@
   <header class="page-head col">
     <h1>Evaluating OpenPronounce for a product</h1>
     <p class="lead">This page answers the questions a technical or product lead usually asks before choosing a pronunciation engine, and describes how to test it on your own recordings at no cost.</p>
-    <p class="soft small">Contents: <a href="#agreement">agreement</a>, <a href="#cost">cost</a>, <a href="#data">data</a>, <a href="#errors">errors</a>, <a href="#maintenance">maintenance</a>, <a href="#plan">evaluation plan</a>, <a href="#purchasing">purchasing</a>.</p>
+    <p class="soft small">Contents: <a href="#agreement">agreement</a>, <a href="#data">data</a>, <a href="#errors">errors</a>, <a href="#maintenance">maintenance</a>, <a href="#plan">evaluation plan</a>, <a href="#purchasing">purchasing</a>.</p>
   </header>
 </div>
 
@@ -67,37 +67,6 @@
         <p class="reader-out"></p>
       </div>
     </div>
-  </div>
-</section>
-
-<section class="block" id="cost">
-  <div class="wrap">
-    <div class="prose">
-      <h2>What does it cost compared with a cloud API?</h2>
-      <p class="soft">Self-hosting costs a server and a licence; a cloud API costs a price per hour of audio. Enter your own figures.</p>
-    </div>
-    <form class="split" id="calc" autocomplete="off">
-      <div class="form">
-        <div class="grid-2">
-          <div class="field"><label for="c-rec">Recordings per day</label><input id="c-rec" type="number" min="0" step="100" value="5000"></div>
-          <div class="field"><label for="c-sec">Seconds per recording</label><input id="c-sec" type="number" min="1" step="1" value="15"></div>
-        </div>
-        <div class="field"><label for="c-price">Cloud price per hour of audio (&euro;)</label><input id="c-price" type="number" min="0" step="0.1" value="1.2"><span class="hint">Take it from your current invoice or your provider's price list.</span></div>
-        <div class="grid-2">
-          <div class="field"><label for="c-server">CPU server per month (&euro;)</label><input id="c-server" type="number" min="0" step="10" value="90"></div>
-          <div class="field"><label for="c-tier">Licence</label>
-            <select id="c-tier"><option value="small">Small business</option><option value="business" selected>Business</option><option value="enterprise">Enterprise (from)</option></select></div>
-        </div>
-      </div>
-      <div class="prose">
-        <div class="result-line">
-          <div><span>Cloud API per year</span><b id="o-cloud"></b><span id="o-hours"></span></div>
-          <div><span>OpenPronounce per year</span><b id="o-own"></b><span id="o-servers"></span></div>
-        </div>
-        <p id="o-verdict"></p>
-        <p class="hint">A 16-thread CPU server runs the full analysis at about three times real time, close to 70 hours of audio a day. The calculation assumes 48 hours per server to leave headroom.</p>
-      </div>
-    </form>
   </div>
 </section>
 

@@ -245,11 +245,6 @@ textarea { min-height: 130px; resize: vertical; }
 .side { display: flex; flex-direction: column; gap: 10px; padding: 20px; background: var(--tint); border-radius: 4px; }
 
 /* Calculator */
-.result-line { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
-.result-line div { padding: 14px 16px 14px 0; display: flex; flex-direction: column; gap: 2px; }
-.result-line div + div { padding-left: 16px; border-left: 1px solid var(--rule); }
-.result-line b { font: 600 1.6rem/1.2 var(--sans); font-variant-numeric: tabular-nums; }
-.result-line span { font-size: 0.86rem; color: var(--soft); }
 
 /* FAQ */
 .faq { border-top: 1px solid var(--rule); max-width: var(--measure); }

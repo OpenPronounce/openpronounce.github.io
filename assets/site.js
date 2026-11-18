@@ -271,30 +271,6 @@
     update();
   }
 
-  /* Cost calculator (teams) */
-  var calc = $("#calc");
-  if (calc) {
-    var run = function () {
-      var n = function (id) { var v = parseFloat($("#" + id).value); return isFinite(v) && v > 0 ? v : 0; };
-      var perDay = n("c-rec"), secs = n("c-sec"), price = n("c-price"), server = n("c-server"), tier = $("#c-tier").value;
-      var hoursDay = perDay * secs / 3600, hoursYear = hoursDay * 365;
-      var servers = Math.max(1, Math.ceil(hoursDay / 48));
-      var cloud = hoursYear * price, own = servers * server * 12 + LICENCES[tier].price;
-      $("#o-cloud").textContent = euro(cloud);
-      $("#o-own").textContent = euro(own);
-      $("#o-hours").textContent = Math.round(hoursYear).toLocaleString("en-GB") + " hours of audio a year";
-      $("#o-servers").textContent = servers + (servers > 1 ? " servers" : " server") + " and the " + LICENCES[tier].name + " licence";
-      var diff = cloud - own, out = $("#o-verdict");
-      var breakEven = Math.ceil(own / Math.max(price, 0.01) * 3600 / 365 / Math.max(secs, 1));
-      out.textContent = diff > 0
-        ? "Running it yourself costs " + euro(diff) + " less a year at this volume."
-        : "At this volume the cloud API is cheaper by " + euro(-diff) + " a year. Self-hosting breaks even around " + breakEven.toLocaleString("en-GB") + " recordings a day, unless keeping the recordings in-house is a requirement on its own.";
-    };
-    calc.addEventListener("input", run);
-    calc.addEventListener("submit", function (e) { e.preventDefault(); });
-    run();
-  }
-
   /* Agreement reader */
   $$("[data-reader]").forEach(function (box) {
     var input = $("input", box), out = $(".reader-out", box);

@@ -91,7 +91,7 @@
         <p>About 4&nbsp;GB of memory. The two speech models weigh 1.2&nbsp;GB each and are downloaded on the first run; the Docker image already contains them.</p>
       </div></details>
       <details><summary>How many recordings can one server handle?</summary><div class="a">
-        <p>A 16-thread CPU server analyses audio about three times faster than real time, close to 70 hours of audio a day. One server process handles one analysis at a time: for more, run several containers behind a load balancer. The <a href="teams.html#cost">cost calculator</a> does the arithmetic for your volume.</p>
+        <p>A 16-thread CPU server analyses audio about three times faster than real time, close to 70 hours of audio a day. One server process handles one analysis at a time: for more, run several containers behind a load balancer.</p>
       </div></details>
       <details><summary>Does it run on macOS and Windows?</summary><div class="a">
         <p>On macOS, with <code>pip</code> and Homebrew's <code>ffmpeg</code>. On Windows, use Docker or WSL. The <a href="developers.html">installation guide</a> has the commands.</p>
