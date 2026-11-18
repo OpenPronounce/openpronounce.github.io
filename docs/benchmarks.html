@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenPronounce benchmarks</title>
+<meta name="description" content="Every figure published about OpenPronounce, the split it was measured on and the script that reproduces it.">
+<link rel="canonical" href="https://openpronounce.github.io/docs/benchmarks.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenPronounce benchmarks">
+<meta property="og:description" content="Every figure published about OpenPronounce, the split it was measured on and the script that reproduces it.">
+<meta property="og:url" content="https://openpronounce.github.io/docs/benchmarks.html">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="../developers.html">Developers</a>
+      <a href="../teams.html">Evaluate</a>
+      <a href="../docs/index.html" aria-current="page">Docs</a>
+      <a href="../faq.html">FAQ</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="https://github.com/OpenPronounce/OpenPronounce">GitHub</a>
+      <a class="btn" href="../developers.html">Install</a>
+    </nav>
+  </div>
+</header>
+<main id="main">
+<div class="wrap"><div class="docs"><nav class="docs-nav" aria-label="Documentation"><div><h4>Getting started</h4><ul><li><a href="../docs/index.html">Introduction</a></li><li><a href="../docs/install.html">Installation</a></li></ul></div><div><h4>Using it</h4><ul><li><a href="../docs/read-speech.html">A sentence to read</a></li><li><a href="../docs/free-speech.html">Free speech</a></li><li><a href="../docs/results.html">Reading a result</a></li><li><a href="../docs/http-api.html">HTTP API and Docker</a></li><li><a href="../docs/configuration.html">Configuration</a></li></ul></div><div><h4>Trusting it</h4><ul><li><a href="../docs/evaluate.html">Measure it on your data</a></li><li><a href="../docs/languages.html">Languages</a></li><li><a href="../docs/limits.html">What it does not do</a></li><li><a href="../docs/how-it-works.html">How it works</a></li><li><a href="../docs/benchmarks.html" aria-current="page">Benchmarks</a></li></ul></div><div><h4>Licensing</h4><ul><li><a href="../docs/licensing.html">Which licence you need</a></li><li><a href="../docs/commercial-licence.html">Commercial licence terms</a></li></ul></div></nav><article class="doc"><h1>Benchmarks</h1>
+<p class="lead">Every figure on this site, the data it was measured on and the script that produces it. The scripts are in the repository under <code>benchmarks/</code>, and so are the models they write.</p>
+<h2>The corpus</h2>
+<p><a href="https://www.openslr.org/101/">speechocean762</a> holds 5,000 English sentences read by 250 Mandarin speakers, half of them children, each rated by five experts on the sentence, every word and every sound. The models are trained on the 2,500 sentences of the train split. Every figure below comes from the other 2,500, read by different speakers, and nothing was tuned on them.</p>
+<h2>The score</h2>
+<p>Pearson correlation with the raters, test split.</p>
+<div class="table-wrap"><table>
+<thead><tr><th>System</th><th>Total</th><th>Accuracy</th><th>Fluency</th><th>Prosody</th></tr></thead>
+<tbody>
+<tr><td>Sentence known (1.0)</td><td>0.790</td><td>0.742</td><td>0.824</td><td>0.807</td></tr>
+<tr><td>No text (1.0)</td><td>0.708</td><td>0.681</td><td>0.787</td><td>0.777</td></tr>
+<tr><td>Hand-tuned formula (0.3)</td><td>0.633</td><td>0.603</td><td>0.595</td><td>0.618</td></tr>
+</tbody></table></div>
+<p>With the sentence known, the score misses the raters by 0.71 points on their 0 to 10 scale on average. Published supervised systems reach 0.74 to 0.80 on the total of this corpus; those figures come from their papers and were not re-run here.</p>
+<p>The correlation depends on who speaks. With the sentence: adults 0.85, children of 12 and under 0.67, teenagers 0.46 (12 speakers whose ratings vary little). Without it: adults 0.82, children 0.42.</p>
+<h2>Mispronounced words</h2>
+<p>A word counts as mispronounced when the raters gave it less than 5 out of 10, which is the case for 5.4 in 100 words of the test split (15,967 words).</p>
+<div class="table-wrap"><table>
+<thead><tr><th>System</th><th>AUC</th><th>Precision</th><th>Recall</th><th>Words flagged</th></tr></thead>
+<tbody>
+<tr><td>Trained model (1.0)</td><td>0.924</td><td>0.53</td><td>0.51</td><td>5.1&nbsp;%</td></tr>
+<tr><td>Edit-distance rule (0.3)</td><td>0.804</td><td>0.20</td><td>0.75</td><td>19.9&nbsp;%</td></tr>
+</tbody></table></div>
+<p>Words not said and speech in excess are built from the texts, since the speakers of the corpus read what they were given. A word added to the text is reported as not said 83 times in 100, and 0.7 in 100 words really read are reported as missing by mistake. A word removed from the text is located as extra speech 63 times in 100, and 2.8 in 100 untouched sentences get a false one.</p>
+<h2>Other conditions</h2>
+<ul>
+<li><strong>Phone line.</strong> The test split through a simulated land line (8&nbsp;kHz, 300 to 3,400&nbsp;Hz, G.711): 0.778 with the sentence instead of 0.813, 0.636 without it instead of 0.684, on 500 sentences. A single score moves by 3.5 points on average.</li>
+<li><strong>Long free speech.</strong> Six sentences of one speaker glued into 22 seconds and compared with the mean of their six ratings: 0.74 to 0.77 for 17 adults. Too few speakers for more than an order of magnitude.</li>
+<li><strong>Other languages.</strong> No rated learner corpus exists for them, so they are checked on native speakers. The figures are on <a href="languages.html">Languages</a>. On English, the generic models those languages use give 0.771 on the total and an AUC of 0.911 on the words.</li>
+</ul>
+<h2>Speed</h2>
+<p>On a 16-thread CPU, models loaded: an 18-second recording takes 3.3 seconds with <code>--fast</code>, 6.2 seconds with both speech models, and 3 minutes of free speech take 52 seconds. Both models together use 3.6&nbsp;GB of memory.</p>
+<h2>Reproducing the figures</h2>
+<p>The corpus is downloaded from the Hugging Face Hub into <code>~/.cache/openpronounce/speechocean762/</code>. Extracting the speech model's outputs takes about 30 minutes per split on CPU and 1.4&nbsp;GB of disk; the rest runs in minutes.</p>
+<div class="code"><pre><span class="p">$ </span>python benchmarks/word_model.py --extract train &amp;&amp; python benchmarks/word_model.py --extract test
+<span class="p">$ </span>python benchmarks/word_model.py --features train &amp;&amp; python benchmarks/word_model.py --features test
+<span class="p">$ </span>python benchmarks/word_model.py --fit --out openpronounce/models/word_mdd_en.json
+<span class="p">$ </span>python benchmarks/scorer.py --features train &amp;&amp; python benchmarks/scorer.py --features test
+<span class="p">$ </span>python benchmarks/scorer.py --fit --out openpronounce/models/scorer_en.json</pre></div>
+<p>The other scripts follow the same pattern: <code>free.py</code> for free speech, <code>groups.py</code> for age and gender, <code>missing_extra.py</code>, <code>telephone.py</code> and <code>native_calibration.py</code> for a new language. The repository's <a href="https://github.com/OpenPronounce/OpenPronounce/blob/main/benchmarks/README.md">benchmarks/README.md</a> has every table in full, with what was tried and did not help.</p>
+<h2>Training on your own ratings</h2>
+<p>The models are plain JSON files, and <code>OPENPRONOUNCE_MODELS_DIR</code> loads yours in their place. The scripts read speechocean762; training on your own rated recordings means adapting the step that loads them. Before training anything, <a href="evaluate.html">measure the shipped models on your data</a>: if they already follow your raters closely enough, there is nothing to gain. That work can also be <a href="../contact.html">ordered as a service</a>.</p>
+<div class="pager"><a class="prev" href="../docs/how-it-works.html"><small>Previous</small>How it works</a><a class="next" href="../docs/licensing.html"><small>Next</small>Which licence you need</a></div></article></div></div></main>
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="logo" href="../index.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="4" fill="var(--ink)"/><path d="M5 14.5c1.6-2.4 3.2-2.4 4.7 0s3.1 2.4 4.6 0 3.1-2.4 4.7 0" stroke="var(--red)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>OpenPronounce</a>
+        <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+      </div>
+      <div><h4>Product</h4><ul>
+        <li><a href="../developers.html">Installation guide</a></li>
+        <li><a href="../teams.html">Evaluate</a></li>
+        <li><a href="../pricing.html">Pricing</a></li>
+        <li><a href="https://github.com/OpenPronounce/OpenPronounce">Source code</a></li>
+      </ul></div>
+      <div><h4>Docs</h4><ul>
+        <li><a href="../docs/install.html">Installation</a></li>
+        <li><a href="../docs/results.html">Reading a result</a></li>
+        <li><a href="../docs/evaluate.html">Measure it on your data</a></li>
+        <li><a href="../docs/limits.html">What it does not do</a></li>
+        <li><a href="../faq.html">Questions and answers</a></li>
+        <li><a href="../governance.html">Governance</a></li>
+      </ul></div>
+      <div><h4>Licence</h4><ul>
+        <li><a href="../docs/licensing.html">Which licence you need</a></li>
+        <li><a href="../buy.html">Buy a licence</a></li>
+        <li><a href="../contact.html">Contact</a></li>
+      </ul></div>
+    </div>
+    <div class="foot-base"><span>&copy; 2026 The OpenPronounce authors. Code and models under the AGPL-3.0 or a commercial licence.</span><span>Benchmarks on speechocean762 (CC BY 4.0).</span></div>
+  </div>
+</footer>
+<script src="../assets/config.js"></script>
+<script src="../assets/site.js"></script>
+</body>
+</html>

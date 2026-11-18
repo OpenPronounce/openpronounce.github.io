@@ -23,7 +23,8 @@ DOCS = [
                   ("docs/results.html", "Reading a result"), ("docs/http-api.html", "HTTP API and Docker"),
                   ("docs/configuration.html", "Configuration")]),
     ("Trusting it", [("docs/evaluate.html", "Measure it on your data"), ("docs/languages.html", "Languages"),
-                     ("docs/limits.html", "What it does not do"), ("docs/how-it-works.html", "How it works")]),
+                     ("docs/limits.html", "What it does not do"), ("docs/how-it-works.html", "How it works"),
+                     ("docs/benchmarks.html", "Benchmarks")]),
     ("Licensing", [("docs/licensing.html", "Which licence you need"), ("docs/commercial-licence.html", "Commercial licence terms")]),
 ]
 
