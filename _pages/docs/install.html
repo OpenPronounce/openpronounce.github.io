@@ -10,7 +10,7 @@
 <div class="code"><pre><span class="p">$ </span>brew install ffmpeg espeak-ng
 <span class="p">$ </span>pip install openpronounce</pre></div>
 <h2>Docker</h2>
-<div class="code"><pre><span class="p">$ </span>git clone https://github.com/Halleck45/OpenPronounce &amp;&amp; cd OpenPronounce
+<div class="code"><pre><span class="p">$ </span>git clone https://github.com/OpenPronounce/OpenPronounce &amp;&amp; cd OpenPronounce
 <span class="p">$ </span>docker build -t openpronounce .
 <span class="p">$ </span>docker run -p 8000:8000 openpronounce</pre></div>
 <p>The image holds the models, so the container starts fast and works offline. <code>Dockerfile.gpu</code> builds the same image for an NVIDIA GPU. On Windows, use Docker or WSL.</p>

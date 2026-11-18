@@ -60,11 +60,11 @@ HEAD = """<!doctype html>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Main">
       <a href="{root}developers.html"{cur_dev}>Developers</a>
-      <a href="{root}teams.html"{cur_teams}>For teams</a>
+      <a href="{root}teams.html"{cur_teams}>Evaluate</a>
       <a href="{root}docs/index.html"{cur_docs}>Docs</a>
       <a href="{root}faq.html"{cur_faq}>FAQ</a>
       <a href="{root}pricing.html"{cur_pricing}>Pricing</a>
-      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a href="https://github.com/OpenPronounce/OpenPronounce">GitHub</a>
       <a class="btn" href="{root}developers.html">Install</a>
     </nav>
   </div>
@@ -82,9 +82,9 @@ FOOT = """</main>
       </div>
       <div><h4>Product</h4><ul>
         <li><a href="{root}developers.html">Installation guide</a></li>
-        <li><a href="{root}teams.html">For teams</a></li>
+        <li><a href="{root}teams.html">Evaluate</a></li>
         <li><a href="{root}pricing.html">Pricing</a></li>
-        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+        <li><a href="https://github.com/OpenPronounce/OpenPronounce">Source code</a></li>
       </ul></div>
       <div><h4>Docs</h4><ul>
         <li><a href="{root}docs/install.html">Installation</a></li>

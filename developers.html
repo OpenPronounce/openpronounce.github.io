@@ -27,11 +27,11 @@
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Main">
       <a href="developers.html" aria-current="page">Developers</a>
-      <a href="teams.html">For teams</a>
+      <a href="teams.html">Evaluate</a>
       <a href="docs/index.html">Docs</a>
       <a href="faq.html">FAQ</a>
       <a href="pricing.html">Pricing</a>
-      <a href="https://github.com/Halleck45/OpenPronounce">GitHub</a>
+      <a href="https://github.com/OpenPronounce/OpenPronounce">GitHub</a>
       <a class="btn" href="developers.html">Install</a>
     </nav>
   </div>
@@ -63,7 +63,7 @@
           <div class="code" data-panel="mac" hidden><pre><span class="p">$ </span>brew install ffmpeg espeak-ng
 <span class="p">$ </span>python3 -m venv .venv &amp;&amp; . .venv/bin/activate
 <span class="p">$ </span>pip install openpronounce</pre></div>
-          <div class="code" data-panel="docker" hidden><pre><span class="p">$ </span>git clone https://github.com/Halleck45/OpenPronounce &amp;&amp; cd OpenPronounce
+          <div class="code" data-panel="docker" hidden><pre><span class="p">$ </span>git clone https://github.com/OpenPronounce/OpenPronounce &amp;&amp; cd OpenPronounce
 <span class="p">$ </span>docker build -t openpronounce .
 <span class="p">$ </span>docker run -p 8000:8000 openpronounce</pre></div>
         </div>
@@ -77,7 +77,7 @@
       <div class="step-body">
         <h2>Score a read sentence</h2>
         <p>This recording from the project was made for the sentence "Hello, I am a good designer", but the speaker said "developer".</p>
-        <div class="code"><pre><span class="p">$ </span>curl -LO https://raw.githubusercontent.com/Halleck45/OpenPronounce/main/assets/developer.wav
+        <div class="code"><pre><span class="p">$ </span>curl -LO https://raw.githubusercontent.com/OpenPronounce/OpenPronounce/main/assets/developer.wav
 <span class="p">$ </span>openpronounce developer.wav "Hello, I am a good designer"
 <span class="c">Score        : 36.2/100</span>
 <span class="c">               accuracy 36.6, fluency 55.0, prosodic 45.9</span>
@@ -97,7 +97,7 @@
       <div class="step-body">
         <h2>Score free speech</h2>
         <p>Without a sentence, the recording is transcribed, cut at its pauses and scored part by part.</p>
-        <div class="code"><pre><span class="p">$ </span>curl -LO https://raw.githubusercontent.com/Halleck45/OpenPronounce/main/assets/harvard.wav
+        <div class="code"><pre><span class="p">$ </span>curl -LO https://raw.githubusercontent.com/OpenPronounce/OpenPronounce/main/assets/harvard.wav
 <span class="p">$ </span>openpronounce harvard.wav
 <span class="c">Score        : 78.2/100</span>
 <span class="c">               accuracy 81.5, fluency 78.8, prosodic 77.5</span>
@@ -185,9 +185,9 @@ form.append(<span class="s">"expected_text"</span>, <span class="s">"Hello, I am
       </div>
       <div><h4>Product</h4><ul>
         <li><a href="developers.html">Installation guide</a></li>
-        <li><a href="teams.html">For teams</a></li>
+        <li><a href="teams.html">Evaluate</a></li>
         <li><a href="pricing.html">Pricing</a></li>
-        <li><a href="https://github.com/Halleck45/OpenPronounce">Source code</a></li>
+        <li><a href="https://github.com/OpenPronounce/OpenPronounce">Source code</a></li>
       </ul></div>
       <div><h4>Docs</h4><ul>
         <li><a href="docs/install.html">Installation</a></li>
