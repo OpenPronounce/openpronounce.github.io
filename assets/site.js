@@ -24,6 +24,43 @@
     });
   }
 
+  /* GitHub stars: cached for an hour; on any failure the buttons simply show no number. */
+  var starEls = $$("[data-stars]");
+  if (starEls.length) {
+    var STAR_KEY = "op:stars";
+    var fmtStars = function (n) { return n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, "") + "k" : String(n); };
+    var paintStars = function (n) {
+      starEls.forEach(function (el) {
+        el.textContent = fmtStars(n); el.hidden = false;
+        var a = el.closest("a");
+        if (a && a.hasAttribute("aria-label")) a.setAttribute("aria-label", "Star OpenPronounce on GitHub (" + n + " stars)");
+      });
+    };
+    var cached = null;
+    try { cached = JSON.parse(store.get(STAR_KEY) || "null"); } catch (e) { cached = null; }
+    if (cached && typeof cached.n === "number") paintStars(cached.n);
+    if ((!cached || !(Date.now() - cached.t < 3600000)) && window.fetch) {
+      fetch("https://api.github.com/repos/OpenPronounce/OpenPronounce", { headers: { Accept: "application/vnd.github+json" } })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+        .then(function (d) {
+          if (typeof d.stargazers_count !== "number") return;
+          paintStars(d.stargazers_count);
+          store.set(STAR_KEY, JSON.stringify({ n: d.stargazers_count, t: Date.now() }));
+        })["catch"](function () { /* rate-limited or offline: leave the count out */ });
+    }
+  }
+
+  /* Sections rise into view once (CSS skips it under prefers-reduced-motion). */
+  var reveals = $$(".reveal");
+  if (reveals.length) {
+    if ("IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+      }, { rootMargin: "0px 0px -10% 0px", threshold: 0.05 });
+      reveals.forEach(function (el) { io.observe(el); });
+    } else reveals.forEach(function (el) { el.classList.add("in"); });
+  }
+
   /* Configured address */
   $$("[data-email]").forEach(function (el) {
     el.textContent = CONFIG.email || "";
@@ -151,6 +188,18 @@
         notes += "<p>" + (unclear ? unclear + " words came out unclear." : "No word came out unclear.") + " The result is marked <code>reliable: true</code>.</p>";
       }
       $(".notes", stage).innerHTML = notes;
+      var code = $("#stage-code"), S = function (t) { return '<span class="s">' + t + "</span>"; }, C = function (t) { return '<span class="c"># ' + t + "</span>"; };
+      if (code) {
+        code.innerHTML = '<span class="k">from</span> openpronounce <span class="k">import</span> load_audio, assess\n\n' + (mode === "read"
+          ? "result = assess(load_audio(" + S('"developer.wav"') + "), " + S('"' + d.expected + '"') + ")\n" +
+            "result[" + S('"score"') + "]       " + C(d.scores.total.toFixed(1)) + "\n" +
+            "result[" + S('"reasons"') + "]     " + C("['not said: good']")
+          : "result = assess(load_audio(" + S('"harvard.wav"') + "))\n" +
+            "result[" + S('"score"') + "]       " + C(d.scores.total.toFixed(1)) + "\n" +
+            "result[" + S('"segments"') + "]    " + C(d.segments.length + " parts, each with its own scores"));
+      }
+      var grade = $(".grade", stage);
+      grade.classList.toggle("draw", false); void grade.offsetWidth; grade.classList.add("draw");
       $(".stage-label", stage).textContent = (mode === "read" ? "developer.wav" : "harvard.wav") + ", " + d.duration.toFixed(1) + " s";
     };
 
@@ -260,30 +309,6 @@
     input.addEventListener("input", read);
     read();
   });
-
-  /* Onboarding progress */
-  var steps = $$(".step[data-step]");
-  if (steps.length) {
-    var bar = $(".progress .track i"), label = $(".progress .count");
-    var refresh = function () {
-      var done = steps.filter(function (s) { return s.classList.contains("done"); }).length;
-      if (bar) bar.style.width = (done / steps.length * 100) + "%";
-      if (label) label.textContent = done + " of " + steps.length + " steps done";
-    };
-    steps.forEach(function (s) {
-      var key = "step:" + s.dataset.step, btn = $(".done-btn", s);
-      if (store.get(key) === "1") s.classList.add("done");
-      if (!btn) return;
-      var sync = function () { btn.textContent = s.classList.contains("done") ? "Done" : "Mark as done"; };
-      sync();
-      btn.addEventListener("click", function () {
-        s.classList.toggle("done");
-        store.set(key, s.classList.contains("done") ? "1" : "0");
-        sync(); refresh();
-      });
-    });
-    refresh();
-  }
 
   /* Order form */
   var order = $("#order");

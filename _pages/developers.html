@@ -3,11 +3,10 @@
   <header class="page-head col">
     <h1>Installation guide</h1>
     <p class="lead">Six steps, from installation to a result shown in your application. You will have a first score at the end of step 2. Nothing here needs an account or a key.</p>
-    <div class="progress"><div class="track"><i></i></div><span class="count">0 of 6 steps done</span></div>
   </header>
 
   <ol class="steps col" style="padding-bottom:72px">
-    <li class="step" data-step="install">
+    <li class="step">
       <span class="n">1</span>
       <div class="step-body">
         <h2>Install</h2>
@@ -30,11 +29,10 @@
 <span class="p">$ </span>docker run -p 8000:8000 openpronounce</pre></div>
         </div>
         <p>On Linux, the third line installs the CPU build of PyTorch, which is much smaller than the default. The Docker image includes the models and serves a web demo and the HTTP API on port 8000. On Windows, use Docker or WSL.</p>
-        <button class="done-btn" type="button">Mark as done</button>
       </div>
     </li>
 
-    <li class="step" data-step="first">
+    <li class="step">
       <span class="n">2</span>
       <div class="step-body">
         <h2>Score a read sentence</h2>
@@ -50,11 +48,10 @@
 <span class="c">  - good: not said</span>
 <span class="c">  - designer: expected /dɪzaɪnɚ/, heard /vɛləpɚ/ (confidence 89%)</span></pre></div>
         <p>Then try a recording of your own voice. It reads wav, mp3, flac, ogg and webm.</p>
-        <button class="done-btn" type="button">Mark as done</button>
       </div>
     </li>
 
-    <li class="step" data-step="free">
+    <li class="step">
       <span class="n">3</span>
       <div class="step-body">
         <h2>Score free speech</h2>
@@ -65,11 +62,10 @@
 <span class="c">               accuracy 81.5, fluency 78.8, prosodic 77.5</span>
 <span class="c">Transcription: the stale smell of old bear lingers it takes heat to bring out the odor ...</span>
 <span class="c">Speech       : 15.9 s in 4 segment(s)</span></pre></div>
-        <button class="done-btn" type="button">Mark as done</button>
       </div>
     </li>
 
-    <li class="step" data-step="python">
+    <li class="step">
       <span class="n">4</span>
       <div class="step-body">
         <h2>Call it from Python</h2>
@@ -87,11 +83,10 @@ result[<span class="s">"reasons"</span>]     <span class="c"># ['not said: good'
 <span class="c"># good ɡʊd dɪ True</span>
 <span class="c"># designer dɪzaɪnɚ vɛləpɚ False</span></pre></div>
         <p>Pass <code>lang="fr"</code> for French, and so on. The <a href="docs/results.html">result reference</a> describes every field.</p>
-        <button class="done-btn" type="button">Mark as done</button>
       </div>
     </li>
 
-    <li class="step" data-step="http">
+    <li class="step">
       <span class="n">5</span>
       <div class="step-body">
         <h2>Call it over HTTP</h2>
@@ -111,18 +106,16 @@ form.append(<span class="s">"expected_text"</span>, <span class="s">"Hello, I am
 <span class="k">const</span> result = <span class="k">await</span> (<span class="k">await</span> fetch(<span class="s">"/pronunciation"</span>, { method: <span class="s">"POST"</span>, body: form })).json();</pre></div>
         </div>
         <p>The running server documents itself on <code>/docs</code>. See also <a href="docs/http-api.html">the endpoints</a>.</p>
-        <button class="done-btn" type="button">Mark as done</button>
       </div>
     </li>
 
-    <li class="step" data-step="show">
+    <li class="step">
       <span class="n">6</span>
       <div class="step-body">
         <h2>Show the result to your users</h2>
         <p>Check <code>reliable</code> before anything else. When it is false, ask the speaker to try again and tell them why, using <code>reasons</code>.</p>
         <p>Show the total as a band rather than a decimal: 76.6 and 78.1 describe the same performance. Then list two or three flagged words, each with a button that replays it from its <code>start</code> to its <code>end</code>, next to a native reading.</p>
         <p class="note">If the product is closed source, it needs a <a href="pricing.html">commercial licence</a> before it reaches users. Development and testing are covered by the AGPL.</p>
-        <button class="done-btn" type="button">Mark as done</button>
       </div>
     </li>
   </ol>

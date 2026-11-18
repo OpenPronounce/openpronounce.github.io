@@ -16,6 +16,17 @@ import re
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PAGES = os.path.join(ROOT, "_pages")
 SITE = "https://openpronounce.github.io"
+REPO = "https://github.com/OpenPronounce/OpenPronounce"
+
+GITHUB_MARK = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 '
+               '2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13'
+               '-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64'
+               '-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53'
+               '-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 '
+               '1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>')
+# A star button; site.js fills [data-stars] with the live count, or leaves it empty.
+STAR = (f'<a class="star-btn" href="{REPO}" aria-label="Star OpenPronounce on GitHub">{GITHUB_MARK}'
+        '<span>Star</span><span class="stars" data-stars hidden></span></a>')
 
 DOCS = [
     ("Getting started", [("docs/index.html", "Introduction"), ("docs/install.html", "Installation")]),
@@ -44,7 +55,10 @@ HEAD = """<!doctype html>
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{url}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{site}/assets/og.png">
+<meta property="og:image:alt" content="OpenPronounce: pronunciation assessment that runs on your own servers">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{site}/assets/og.png">
 <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#121212" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
@@ -52,22 +66,24 @@ HEAD = """<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
 <link rel="stylesheet" href="{root}assets/site.css">
+<script>document.documentElement.classList.add("js")</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="wrap">
     <a class="logo" href="{root}index.html">{logo}OpenPronounce</a>
-    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
     <nav class="nav" id="nav" aria-label="Main">
       <a href="{root}developers.html"{cur_dev}>Developers</a>
       <a href="{root}teams.html"{cur_teams}>Evaluate</a>
       <a href="{root}docs/index.html"{cur_docs}>Docs</a>
       <a href="{root}faq.html"{cur_faq}>FAQ</a>
       <a href="{root}pricing.html"{cur_pricing}>Pricing</a>
-      <a href="https://github.com/OpenPronounce/OpenPronounce">GitHub</a>
-      <a class="btn" href="{root}developers.html">Install</a>
+      <a class="btn nav-install" href="{root}developers.html">Install</a>
     </nav>
+    {star}
+    <a class="btn head-install" href="{root}developers.html">Install</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
   </div>
 </header>
 <main id="main">
@@ -80,12 +96,14 @@ FOOT = """</main>
       <div>
         <a class="logo" href="{root}index.html">{logo}OpenPronounce</a>
         <p>Pronunciation assessment that runs on your own servers. Open source, code and models.</p>
+        <p class="foot-star">{star}<span>One click tells the maintainers it is used.</span></p>
       </div>
       <div><h4>Product</h4><ul>
         <li><a href="{root}developers.html">Installation guide</a></li>
         <li><a href="{root}teams.html">Evaluate</a></li>
         <li><a href="{root}pricing.html">Pricing</a></li>
-        <li><a href="https://github.com/OpenPronounce/OpenPronounce">Source code</a></li>
+        <li><a href="https://github.com/OpenPronounce/OpenPronounce">GitHub</a></li>
+        <li><a href="https://github.com/OpenPronounce/OpenPronounce/issues">Report an issue</a></li>
       </ul></div>
       <div><h4>Docs</h4><ul>
         <li><a href="{root}docs/install.html">Installation</a></li>
@@ -149,8 +167,8 @@ def build():
             scripts = "".join(f'<script src="{root}{s}"></script>\n' for s in meta.get("scripts", []))
             url = SITE + "/" + ("" if path == "index.html" else path)
             page = (HEAD.format(title=html.escape(meta["title"]), description=html.escape(meta["description"]), url=url,
-                                root=root, logo=LOGO, **{f"cur_{k}": v for k, v in cur.items()})
-                    + body + FOOT.format(root=root, logo=LOGO, scripts=scripts))
+                                root=root, logo=LOGO, site=SITE, star=STAR, **{f"cur_{k}": v for k, v in cur.items()})
+                    + body + FOOT.format(root=root, logo=LOGO, star=STAR, scripts=scripts))
             out = os.path.join(ROOT, path)
             os.makedirs(os.path.dirname(out), exist_ok=True)
             with open(out, "w", encoding="utf-8") as f:
