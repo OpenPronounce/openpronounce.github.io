@@ -505,3 +505,13 @@ textarea { min-height: 130px; resize: vertical; }
 .device .wrap { display: flex; flex-direction: column; gap: 22px; }
 .device .lead { max-width: var(--measure); }
 .device .prose { max-width: var(--measure); }
+/* Before the model is ready, the button fetches it: a down arrow, the ring fills with the download. */
+[data-model="none"] .rec-icon, [data-model="loading"] .rec-icon { --mic: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 3.5v12M6.5 10.5 12 16l5.5-5.5M5 20.5h14' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+[data-model="loading"] .rec { background: var(--red-soft); color: var(--red); box-shadow: none; cursor: progress; }
+[data-model="loading"] .rec:hover, [data-model="loading"] .rec:active { transform: none; }
+[data-model="loading"] .rec-track { stroke: var(--rule); }
+[data-state="recording"] .try-size, [data-model="loading"] .try-file { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  [data-model="ready"][data-state="idle"] .rec { animation: rec-ready 0.6s ease-out 1; }
+  @keyframes rec-ready { 0% { box-shadow: 0 0 0 0 var(--red-soft); } 60% { box-shadow: 0 0 0 16px var(--red-soft); } 100% { box-shadow: 0 0 0 4px var(--red-soft); } }
+}

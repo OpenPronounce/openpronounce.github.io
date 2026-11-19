@@ -1,7 +1,7 @@
 <!-- {"title": "Try OpenPronounce in your browser", "description": "Read an English sentence aloud and see the score and the words a rater would mark. The analysis runs in the page: the recording is never uploaded.", "nav": "try"} -->
 <section class="wrap try">
   <h1 class="try-title">Read this aloud. See what a rater would mark.</h1>
-  <figure class="sheet try-sheet" id="try" data-state="idle">
+  <figure class="sheet try-sheet" id="try" data-state="idle" data-model="none">
     <div class="sheet-head try-head">
       <div class="try-nav">
         <button class="try-arrow" type="button" id="try-prev" aria-label="Previous sentence"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -22,17 +22,17 @@
       </div>
       <div class="margin try-margin">
         <div class="try-act" id="try-act">
-          <button class="rec" type="button" id="try-record" aria-label="Record">
+          <button class="rec" type="button" id="try-record" aria-label="Get the model ready">
             <svg class="rec-ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rec-track" cx="50" cy="50" r="47"/><circle class="rec-prog" cx="50" cy="50" r="47" pathLength="1"/></svg>
             <span class="rec-icon" aria-hidden="true"></span>
           </button>
-          <p class="try-status" id="try-status" role="status" aria-live="polite">Press, then read the sentence.</p>
+          <p class="try-status" id="try-status" role="status" aria-live="polite">Press to get the model ready: about 130&nbsp;MB, once.</p>
           <div class="try-bar" id="try-bar" hidden><div></div></div>
           <div class="try-ask" id="try-ask" hidden>
-            <p>Your browser is set to save data, and the first recording needs a download of about 130&nbsp;MB.</p>
-            <div class="try-ask-btns"><button class="btn" type="button" id="try-ask-yes">Download and record</button><button class="btn btn-line" type="button" id="try-ask-no">Not now</button></div>
+            <p>Your browser is set to save data, and the model is a download of about 130&nbsp;MB.</p>
+            <div class="try-ask-btns"><button class="btn" type="button" id="try-ask-yes">Download</button><button class="btn btn-line" type="button" id="try-ask-no">Not now</button></div>
           </div>
-          <p class="try-size" id="try-size">First time: about 130&nbsp;MB, downloaded once and kept by your browser.</p>
+          <p class="try-size" id="try-size">Downloaded once, then kept by your browser. Nothing you record is uploaded.</p>
           <label class="try-file">or score an audio file<input type="file" id="try-file" accept="audio/*"></label>
         </div>
         <div class="try-grade" id="try-grade" hidden>

@@ -44,6 +44,9 @@ const escape = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": 
 const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 const status = (text) => { ui.status.textContent = text; };
 const setState = (state) => { sheet.dataset.state = state; };
+const setModel = (model) => { sheet.dataset.model = model; };
+const IDLE_TEXT = { none: "Press to get the model ready: about 130 MB, once.", ready: "Ready. Press, then read the sentence." };
+const idleText = () => (sheet.dataset.model === "ready" ? IDLE_TEXT.ready : IDLE_TEXT.none);
 
 /* The sentence: one of the examples, or the visitor's own */
 let index = 0;
@@ -103,7 +106,13 @@ const progress = { received: 0, total: 0, phase: "" };
 function showProgress() {
   const { received, total, phase } = progress;
   if (!waiting) {
-    if (phase === "download") ui.size.textContent = `Downloading the model: ${mb(received)}${total ? ` of ${mb(total)}` : ""} MB.`;
+    if (phase === "download") {
+      status(total ? `Getting the model ready: ${mb(received)} of ${mb(total)} MB.` : `Getting the model ready: ${mb(received)} MB.`);
+      if (total) ui.record.style.setProperty("--elapsed", (received / total).toFixed(4));
+    } else if (sheet.dataset.model === "loading") {
+      status("Almost ready…");
+      ui.record.style.setProperty("--elapsed", "1");
+    }
     return;
   }
   if (phase === "download") {
@@ -183,8 +192,10 @@ function ensureModel() {
     }
     metrics.readyMs = performance.now() - metrics.start;
     metrics.threads = ort.env.wasm.numThreads;
-    ui.size.textContent = "The model is ready on this device.";
-    if (sheet.dataset.state === "idle" && !recorder) status("Press, then read the sentence.");
+    setModel("ready");
+    ui.record.style.removeProperty("--elapsed");
+    ui.record.setAttribute("aria-label", "Record");
+    if (sheet.dataset.state === "idle" && !recorder) status(IDLE_TEXT.ready);
     return assessor;
   })();
   assessorPromise.catch(() => { assessorPromise = null; });
@@ -335,7 +346,7 @@ function clearResult() {
   ui.bar.hidden = true;
   ui.ask.hidden = true;
   setState("idle");
-  status("Press, then read the sentence.");
+  status(idleText());
   showSentence();
 }
 
@@ -408,7 +419,8 @@ function startMeter(stream) {
       const elapsed = (performance.now() - started) / 1000;
       ui.record.style.setProperty("--level", level.toFixed(3));
       ui.record.style.setProperty("--elapsed", Math.min(1, elapsed / MAX_SECONDS).toFixed(4));
-      status(`Recording, ${Math.floor(elapsed)} s. Press again when you are done.`);
+      const secs = Math.floor(elapsed);
+      status(`Recording 0:${String(secs).padStart(2, "0")}. Press to stop.`);
       frame = requestAnimationFrame(loop);
     };
     loop();
@@ -458,9 +470,19 @@ async function startRecording() {
   }
 }
 
+function prepare() {
+  if (sheet.dataset.model !== "none") return;
+  if (mustAsk(prepare)) return;
+  setModel("loading");
+  ui.record.setAttribute("aria-label", "Getting the model ready");
+  status("Getting the model ready…");
+  ensureModel().then(() => ui.record.focus(), (error) => { setModel("none"); ui.record.setAttribute("aria-label", "Get the model ready"); fail(error); });
+}
+
 ui.record.addEventListener("click", () => {
   if (recorder) recorder.stop();
-  else startRecording();
+  else if (sheet.dataset.model === "ready") startRecording();
+  else prepare();
 });
 ui.again.addEventListener("click", () => { clearResult(); startRecording(); });
 $("#try-ask-yes").addEventListener("click", () => {
@@ -478,7 +500,11 @@ $("#try-ask-no").addEventListener("click", () => {
   status("Nothing was downloaded.");
 });
 
-const scoreFile = (file) => { if (current) clearResult(); score(file).catch(fail); };
+const scoreFile = (file) => {
+  if (current) clearResult();
+  if (sheet.dataset.model === "none") setModel("loading");
+  score(file).catch((error) => { if (sheet.dataset.model !== "ready") setModel("none"); fail(error); });
+};
 ui.file.addEventListener("change", () => {
   const file = ui.file.files[0];
   ui.file.value = "";
@@ -502,7 +528,12 @@ function fail(error) {
   cachedAtStart = cache ? await cache.match(modelUrl).then(Boolean, () => false) : false;
   metrics.cachedAtStart = cachedAtStart;
   if (cachedAtStart) ui.size.textContent = "The model is already on this device.";
-  if (cachedAtStart || params.has("model") || params.has("clip")) ensureModel().catch(fail);
+  else ui.size.textContent = "Downloaded once, then kept by your browser. Nothing you record is uploaded.";
+  if (cachedAtStart || params.has("model") || params.has("clip")) {
+    setModel("loading");
+    status("Getting the model ready…");
+    ensureModel().catch((error) => { setModel("none"); fail(error); });
+  }
   if (params.get("clip")) {
     try {
       const response = await fetch(params.get("clip"));
