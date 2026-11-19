@@ -3,6 +3,9 @@
 // data/ holds the word model, the scorer and the CMUdict lexicon it reads. The ONNX phone model
 // comes from Hugging Face and is kept with the Cache API; onnxruntime-web comes from jsDelivr.
 //
+// There is no download button: the model starts downloading on the first press of Record, while
+// the visitor reads, and on page load when the browser already holds it.
+//
 // Debug parameters, for testing without a microphone:
 //   ?model=<url>                 another copy of the ONNX model (loads it right away)
 //   ?clip=<url>&text=<sentence>  score that clip as if it had been uploaded, once the model is ready
@@ -18,6 +21,8 @@ const EXAMPLES = [
   "I would like a cup of coffee, please",
   "She sells seashells by the seashore",
   "We are going to the theatre on Thursday",
+  "Could you tell me the way to the station",
+  "The weather was much better than we expected",
 ];
 
 const params = new URLSearchParams(location.search);
@@ -25,37 +30,64 @@ const modelUrl = params.get("model") || MODEL_URL;
 const $ = (sel, root = document) => root.querySelector(sel);
 const sheet = $("#try");
 const ui = {
-  sentence: $("#try-sentence"), examples: $("#try-examples"), load: $("#try-load"), record: $("#try-record"),
-  file: $("#try-file"), fileLabel: $("#try-file-label"), status: $("#try-status"), bar: $("#try-bar"),
-  result: $("#try-result"), foot: $("#try-foot"), canvas: $("canvas", sheet), said: $(".said-row", sheet),
-  notes: $(".notes", sheet), play: $(".play", sheet),
+  text: $("#try-text"), input: $("#try-input"), count: $("#try-count"), prev: $("#try-prev"), next: $("#try-next"),
+  own: $("#try-own"), record: $("#try-record"), status: $("#try-status"), bar: $("#try-bar"), size: $("#try-size"),
+  ask: $("#try-ask"), file: $("#try-file"), act: $("#try-act"), grade: $("#try-grade"), again: $("#try-again"),
+  player: $("#try-player"), notes: $("#try-notes"), foot: $("#try-foot"), canvas: $("canvas", sheet), play: $(".play", sheet),
 };
+const FOOT = ui.foot.textContent;
 const metrics = { start: performance.now() };
 window.__openpronounce = metrics;
 
-const status = (text) => { ui.status.textContent = text; };
 const mb = (bytes) => (bytes / 1e6).toFixed(0);
 const escape = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const status = (text) => { ui.status.textContent = text; };
+const setState = (state) => { sheet.dataset.state = state; };
 
-/* Sentences */
-for (const text of EXAMPLES) {
-  const chip = document.createElement("button");
-  chip.type = "button";
-  chip.className = "chip";
-  chip.textContent = text;
-  chip.setAttribute("aria-pressed", "false");
-  chip.addEventListener("click", () => { ui.sentence.value = text; syncChips(); });
-  ui.examples.append(chip);
+/* The sentence: one of the examples, or the visitor's own */
+let index = 0;
+let custom = params.get("text");
+const sentence = () => (custom ?? EXAMPLES[index]).trim();
+
+function showSentence() {
+  ui.text.textContent = sentence();
+  ui.text.hidden = false;
+  ui.input.hidden = true;
+  ui.count.textContent = custom != null ? "Your sentence" : `Sentence ${index + 1} of ${EXAMPLES.length}`;
 }
-const syncChips = () => {
-  for (const chip of ui.examples.children) chip.setAttribute("aria-pressed", String(chip.textContent === ui.sentence.value.trim()));
+function step(delta) {
+  if (recorder) return;
+  index = custom != null ? 0 : (index + delta + EXAMPLES.length) % EXAMPLES.length;
+  custom = null;
+  clearResult();
+  showSentence();
+}
+ui.prev.addEventListener("click", () => step(-1));
+ui.next.addEventListener("click", () => step(1));
+ui.own.addEventListener("click", () => {
+  if (recorder) return;
+  clearResult();
+  ui.input.value = custom ?? "";
+  ui.text.hidden = true;
+  ui.input.hidden = false;
+  ui.count.textContent = "Your sentence";
+  ui.input.focus();
+});
+const commitInput = () => {
+  if (ui.input.hidden) return;
+  const value = ui.input.value.replace(/\s+/g, " ").trim();
+  if (wordsOf(value).length) custom = value;
+  showSentence();
 };
-ui.sentence.addEventListener("input", syncChips);
-ui.sentence.value = params.get("text") || EXAMPLES[0];
-syncChips();
+ui.input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); commitInput(); ui.record.focus(); }
+  if (e.key === "Escape") { e.preventDefault(); showSentence(); }
+});
+ui.input.addEventListener("blur", commitInput);
+showSentence();
 
-/* Model download, kept in the Cache API so that it is fetched once */
+/* The model, kept in the Cache API so that it is fetched once */
 async function openCache() {
   try {
     if (!("caches" in self)) return null;
@@ -65,33 +97,49 @@ async function openCache() {
     return null;
   }
 }
+const cacheReady = openCache();
+
+const progress = { received: 0, total: 0, phase: "" };
+function showProgress() {
+  const { received, total, phase } = progress;
+  if (!waiting) {
+    if (phase === "download") ui.size.textContent = `Downloading the model: ${mb(received)}${total ? ` of ${mb(total)}` : ""} MB.`;
+    return;
+  }
+  if (phase === "download") {
+    status(total ? `Got it. The model is on its way: ${mb(received)} of ${mb(total)} MB.` : `Got it. The model is on its way: ${mb(received)} MB.`);
+    ui.bar.hidden = !total;
+    if (total) ui.bar.firstElementChild.style.width = `${(100 * received / total).toFixed(1)}%`;
+  } else {
+    ui.bar.hidden = true;
+    status("Marking your reading…");
+  }
+}
 
 async function modelBytes(cache) {
   if (cache) {
     const hit = await cache.match(modelUrl).catch(() => null);
     if (hit) {
       metrics.modelFrom = "cache";
-      status("Loading the model from your browser’s storage…");
       return new Uint8Array(await hit.arrayBuffer());
     }
   }
   metrics.modelFrom = "network";
+  progress.phase = "download";
   const response = await fetch(modelUrl);
   if (!response.ok) throw new Error(`the model could not be downloaded (HTTP ${response.status})`);
-  const total = Number(response.headers.get("Content-Length")) || 0;
+  progress.total = Number(response.headers.get("Content-Length")) || 0;
   const reader = response.body.getReader();
   const chunks = [];
-  let received = 0;
-  ui.bar.hidden = false;
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
     chunks.push(value);
-    received += value.length;
-    if (total) ui.bar.firstElementChild.style.width = `${(100 * received / total).toFixed(1)}%`;
-    status(total ? `Downloading the model: ${mb(received)} of ${mb(total)} MB` : `Downloading the model: ${mb(received)} MB`);
+    progress.received += value.length;
+    showProgress();
   }
-  const bytes = new Uint8Array(received);
+  progress.phase = "";
+  const bytes = new Uint8Array(progress.received);
   let offset = 0;
   for (const chunk of chunks) {
     bytes.set(chunk, offset);
@@ -108,46 +156,36 @@ async function modelBytes(cache) {
   return bytes;
 }
 
-let assessor = null;
-async function load() {
-  ui.load.disabled = true;
-  status("Starting…");
-  const cache = await openCache();
-  const [ort, bytes] = await Promise.all([import(ORT_BASE + "ort.wasm.min.mjs"), modelBytes(cache)]);
-  metrics.downloadMs = performance.now() - metrics.start;
-  ort.env.wasm.wasmPaths = ORT_BASE;
-  ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
-  ui.bar.firstElementChild.style.width = "100%";
-  status("Preparing the model…");
-  assessor = await createAssessor({ ort, modelBytes: bytes, dataUrl: new URL("data/", import.meta.url).href });
-  metrics.readyMs = performance.now() - metrics.start;
-  metrics.threads = ort.env.wasm.numThreads;
-  ui.bar.hidden = true;
-  ui.load.hidden = true;
-  ui.record.hidden = false;
-  ui.fileLabel.hidden = false;
-  ui.record.disabled = false;
-  ui.file.disabled = false;
-  status("Ready. Press Record and read the sentence, or use an audio file.");
-  if (params.get("clip")) {
-    const response = await fetch(params.get("clip"));
-    if (!response.ok) throw new Error(`clip: HTTP ${response.status}`);
-    await score(await response.blob());
-  }
+let assessorPromise = null;
+function ensureModel() {
+  assessorPromise ??= (async () => {
+    const cache = await cacheReady;
+    const [ort, bytes] = await Promise.all([import(ORT_BASE + "ort.wasm.min.mjs"), modelBytes(cache)]);
+    metrics.downloadMs = performance.now() - metrics.start;
+    ort.env.wasm.wasmPaths = ORT_BASE;
+    ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
+    const assessor = await createAssessor({ ort, modelBytes: bytes, dataUrl: new URL("data/", import.meta.url).href });
+    metrics.readyMs = performance.now() - metrics.start;
+    metrics.threads = ort.env.wasm.numThreads;
+    ui.size.textContent = "The model is ready on this device.";
+    if (sheet.dataset.state === "idle" && !recorder) status("Press, then read the sentence.");
+    return assessor;
+  })();
+  assessorPromise.catch(() => { assessorPromise = null; });
+  return assessorPromise;
 }
 
-/* Scoring */
+/* Scoring: a recording or a file, through the same path */
+let waiting = false;
 let audioUrl = null;
 let current = null;
 async function score(blob) {
-  const sentence = ui.sentence.value.trim();
-  if (!wordsOf(sentence).length) {
-    status("Type the sentence you are going to read first.");
-    return;
-  }
+  const text = sentence();
+  if (!wordsOf(text).length) throw new Error("type the sentence you are going to read first");
+  setState("analysing");
+  waiting = true;
   ui.record.disabled = true;
-  ui.file.disabled = true;
-  status("Listening to your recording…");
+  showProgress();
   try {
     const t0 = performance.now();
     let samples;
@@ -158,17 +196,20 @@ async function score(blob) {
     }
     if (samples.length < 16000 * 0.3) throw new Error("the recording is too short");
     if (samples.length > 16000 * 60) throw new Error("the recording is longer than a minute; read one sentence");
-    const result = await assessor.assess(samples, sentence);
-    metrics.last = { seconds: samples.length / 16000, ...result.timings, totalMs: performance.now() - t0 };
+    const assessor = await ensureModel();
+    status("Marking your reading…");
+    ui.bar.hidden = true;
+    const t1 = performance.now();
+    const result = await assessor.assess(samples, text);
+    metrics.last = { seconds: samples.length / 16000, ...result.timings, totalMs: performance.now() - t1, sinceStopMs: performance.now() - t0 };
     metrics.result = result;
     if (audioUrl) URL.revokeObjectURL(audioUrl);
     audioUrl = URL.createObjectURL(blob);
-    current = { result, sentence, samples };
+    current = { result, sentence: text, samples };
     render();
-    status("Done. Record again whenever you like.");
   } finally {
+    waiting = false;
     ui.record.disabled = false;
-    ui.file.disabled = false;
   }
 }
 
@@ -188,7 +229,7 @@ function peaksOf(samples, n) {
 const flaggedWords = () => (current.result.differences.words ?? []).filter((w) => w.mispronounced);
 
 function draw(time = -1) {
-  if (!current) return;
+  if (!current || ui.player.hidden) return;
   const canvas = ui.canvas, dpr = window.devicePixelRatio || 1, w = canvas.clientWidth, h = canvas.clientHeight;
   if (!w) return;
   canvas.width = w * dpr;
@@ -210,11 +251,11 @@ function draw(time = -1) {
 }
 
 function render() {
-  const { result, sentence } = current;
+  const { result, sentence: text } = current;
   const words = result.differences.words ?? [];
-  // The sentence as typed; each run of letters takes the report of the same position.
-  let position = 0;
-  ui.said.innerHTML = sentence.split(/(\s+)/).map((token) => {
+  // The sentence as typed, marked in place; each run of letters takes the report of the same position.
+  let position = 0, flaggedSoFar = 0;
+  ui.text.innerHTML = text.split(/(\s+)/).map((token) => {
     if (!token || /^\s+$/.test(token)) return token;
     const count = wordsOf(token).length;
     if (!count) return escape(token);
@@ -224,7 +265,7 @@ function render() {
     if (!report) return `<span class="word">${escape(token)}</span>`;
     const pen = report.missing ? '<span class="pen">not said</span>'
       : `<span class="pen ipa">/${escape(report.actual.join(""))}/</span>`;
-    return `<span class="word bad${report.missing ? " missing" : ""}">${escape(token)}${pen}</span>`;
+    return `<span class="word bad${report.missing ? " missing" : ""}" style="--i:${flaggedSoFar++}">${escape(token)}${pen}</span>`;
   }).join("");
 
   const total = result.score;
@@ -247,19 +288,39 @@ function render() {
     notes.push(`<p><em>${escape(w.word)}</em>: expected <span class="ipa">/${escape(w.expected.join(""))}/</span>, heard `
       + `<span class="ipa red">/${escape(w.actual.join(""))}/</span>${phones.length ? ` (${phones.join(", ")})` : ""}.</p>`);
   }
-  if (!flagged.length) notes.push("<p>No word stands out.</p>");
+  if (!flagged.length) notes.push("<p>No word stands out. Press play to hear yourself.</p>");
   if (!result.reliable) notes.push(`<p>Take this score with care: ${escape(result.reasons.join("; "))}.</p>`);
   ui.notes.innerHTML = notes.join("");
+  ui.notes.hidden = false;
 
   const t = metrics.last;
-  ui.foot.textContent = `${t.seconds.toFixed(1)} s of audio, analysed on this device in ${((t.model_ms + t.scoring_ms) / 1000).toFixed(1)} s.`;
-  ui.foot.hidden = false;
-  ui.result.hidden = false;
+  ui.foot.textContent = `${t.seconds.toFixed(1)} s of audio, marked on this device in ${((t.model_ms + t.scoring_ms) / 1000).toFixed(1)} s. Nothing left it.`;
+  ui.player.hidden = false;
+  ui.act.hidden = true;
+  ui.grade.hidden = false;
+  setState("result");
   const grade = $(".grade", sheet);
   grade.classList.remove("draw");
   void grade.offsetWidth;
   grade.classList.add("draw");
   stop();
+  const box = sheet.getBoundingClientRect();
+  if (box.top < 64 || box.top > innerHeight * 0.5) sheet.scrollIntoView({ block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+}
+
+function clearResult() {
+  audio.pause();
+  current = null;
+  ui.player.hidden = true;
+  ui.notes.hidden = true;
+  ui.grade.hidden = true;
+  ui.act.hidden = false;
+  ui.foot.textContent = FOOT;
+  ui.bar.hidden = true;
+  ui.ask.hidden = true;
+  setState("idle");
+  status("Press, then read the sentence.");
+  showSentence();
 }
 
 /* Playback of the visitor's own recording */
@@ -287,68 +348,152 @@ ui.play.addEventListener("click", () => {
     }, stop);
   } else audio.pause();
 });
+$(".wave", sheet).addEventListener("click", (e) => {
+  if (!current || !audio.src) return;
+  const r = ui.canvas.getBoundingClientRect();
+  audio.currentTime = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)) * (current.samples.length / 16000);
+  tick();
+});
 window.addEventListener("resize", () => draw(audio.paused ? -1 : audio.currentTime));
 window.matchMedia?.("(prefers-color-scheme: dark)").addEventListener("change", () => draw(-1));
+new MutationObserver(() => draw(-1)).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 
-/* Recording and upload */
+/* Recording: the level drives the ring around the button, the ring fills over the 20 seconds */
 let recorder = null;
-let limit = 0;
-ui.record.addEventListener("click", async () => {
-  if (recorder) {
-    recorder.stop();
-    return;
+let meter = null;
+let cachedAtStart = false;
+let downloadAgreed = false;
+let pending = null;
+// With "save data" on, nothing is downloaded before the visitor says yes.
+function mustAsk(action) {
+  if (assessorPromise || cachedAtStart || downloadAgreed || !navigator.connection?.saveData) return false;
+  pending = action;
+  ui.ask.hidden = false;
+  ui.size.hidden = true;
+  status("One question first.");
+  $("#try-ask-yes").focus();
+  return true;
+}
+
+function startMeter(stream) {
+  try {
+    const context = new AudioContext();
+    const analyser = context.createAnalyser();
+    analyser.fftSize = 1024;
+    context.createMediaStreamSource(stream).connect(analyser); // not connected to the speakers
+    const buffer = new Float32Array(analyser.fftSize);
+    const started = performance.now();
+    let frame = 0;
+    const loop = () => {
+      analyser.getFloatTimeDomainData(buffer);
+      let sum = 0;
+      for (const v of buffer) sum += v * v;
+      const level = Math.min(1, Math.sqrt(sum / buffer.length) * 6);
+      const elapsed = (performance.now() - started) / 1000;
+      ui.record.style.setProperty("--level", level.toFixed(3));
+      ui.record.style.setProperty("--elapsed", Math.min(1, elapsed / MAX_SECONDS).toFixed(4));
+      status(`Recording, ${Math.floor(elapsed)} s. Press again when you are done.`);
+      frame = requestAnimationFrame(loop);
+    };
+    loop();
+    return { stop: () => { cancelAnimationFrame(frame); context.close(); } };
+  } catch {
+    return { stop: () => {} };
   }
-  if (!wordsOf(ui.sentence.value).length) {
+}
+
+async function startRecording() {
+  if (recorder) return;
+  if (!wordsOf(sentence()).length) {
     status("Type the sentence you are going to read first.");
     return;
   }
+  if (mustAsk(startRecording)) return;
   try {
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") {
-      throw new Error("this browser cannot record here; use an audio file instead");
+      throw new Error("this browser cannot record here; score an audio file instead");
     }
+    if (current) clearResult();
+    ensureModel().catch(() => {}); // in parallel with the reading; its errors surface when scoring
     const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
     const chunks = [];
-    recorder = new MediaRecorder(stream);
-    recorder.addEventListener("dataavailable", (e) => { if (e.data.size) chunks.push(e.data); });
-    recorder.addEventListener("stop", () => {
-      clearTimeout(limit);
+    const rec = new MediaRecorder(stream);
+    recorder = rec;
+    rec.addEventListener("dataavailable", (e) => { if (e.data.size) chunks.push(e.data); });
+    rec.addEventListener("stop", () => {
+      clearTimeout(rec.limit);
+      meter?.stop();
+      meter = null;
       stream.getTracks().forEach((track) => track.stop());
-      const type = recorder.mimeType;
       recorder = null;
-      ui.record.textContent = "Record";
-      ui.record.classList.remove("recording");
-      score(new Blob(chunks, { type })).catch(fail);
+      ui.record.setAttribute("aria-label", "Record");
+      ui.record.style.removeProperty("--level");
+      ui.record.style.removeProperty("--elapsed");
+      score(new Blob(chunks, { type: rec.mimeType })).catch(fail);
     });
-    recorder.start();
-    limit = setTimeout(() => recorder?.stop(), MAX_SECONDS * 1000);
-    ui.record.textContent = "Stop";
-    ui.record.classList.add("recording");
-    status("Recording. Read the sentence, then press Stop.");
+    rec.start();
+    rec.limit = setTimeout(() => rec.state !== "inactive" && rec.stop(), MAX_SECONDS * 1000);
+    setState("recording");
+    ui.record.setAttribute("aria-label", "Stop recording");
+    meter = startMeter(stream);
   } catch (error) {
     recorder = null;
-    fail(error.name === "NotAllowedError" ? new Error("the browser was not allowed to use the microphone") : error);
+    fail(error.name === "NotAllowedError" ? new Error("the browser was not allowed to use the microphone; you can score an audio file instead") : error);
   }
+}
+
+ui.record.addEventListener("click", () => {
+  if (recorder) recorder.stop();
+  else startRecording();
+});
+ui.again.addEventListener("click", () => { clearResult(); startRecording(); });
+$("#try-ask-yes").addEventListener("click", () => {
+  downloadAgreed = true;
+  ui.ask.hidden = true;
+  ui.size.hidden = false;
+  const action = pending;
+  pending = null;
+  action?.();
+});
+$("#try-ask-no").addEventListener("click", () => {
+  pending = null;
+  ui.ask.hidden = true;
+  ui.size.hidden = false;
+  status("Nothing was downloaded.");
 });
 
+const scoreFile = (file) => { if (current) clearResult(); score(file).catch(fail); };
 ui.file.addEventListener("change", () => {
   const file = ui.file.files[0];
   ui.file.value = "";
-  if (file) score(file).catch(fail);
+  if (file && !mustAsk(() => scoreFile(file))) scoreFile(file);
 });
 
 function fail(error) {
   console.error(error);
+  waiting = false;
   ui.bar.hidden = true;
-  ui.load.disabled = false;
+  ui.record.disabled = false;
+  ui.act.hidden = false;
+  ui.grade.hidden = true;
+  setState("idle");
   status(`Something went wrong: ${error.message ?? error}.`);
 }
 
-ui.load.addEventListener("click", () => load().catch(fail));
-
-// Start on its own when the model is already stored, or when testing with ?model= / ?clip=.
+// Load on its own when the model is already stored, or when testing with ?model= / ?clip=.
 (async () => {
-  const cache = await openCache();
-  const cached = cache ? await cache.match(modelUrl).then(Boolean, () => false) : false;
-  metrics.cachedAtStart = cached;
-  if (cached || params.has("model") || params.has("clip")) load().catch(fail);
+  const cache = await cacheReady;
+  cachedAtStart = cache ? await cache.match(modelUrl).then(Boolean, () => false) : false;
+  metrics.cachedAtStart = cachedAtStart;
+  if (cachedAtStart) ui.size.textContent = "The model is already on this device.";
+  if (cachedAtStart || params.has("model") || params.has("clip")) ensureModel().catch(fail);
+  if (params.get("clip")) {
+    try {
+      const response = await fetch(params.get("clip"));
+      if (!response.ok) throw new Error(`clip: HTTP ${response.status}`);
+      await score(await response.blob());
+    } catch (error) {
+      fail(error);
+    }
+  }
 })();

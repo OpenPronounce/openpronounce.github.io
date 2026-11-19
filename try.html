@@ -43,64 +43,110 @@
   </div>
 </header>
 <main id="main">
-<section class="page-head wrap">
-  <h1>Read a sentence aloud. See what a rater would mark.</h1>
-  <p class="lead">Pick a sentence, record yourself reading it, and the page scores it with the same pipeline as the Python library. It all runs on this device, so the recording never leaves it.</p>
-</section>
-
 <section class="wrap try">
-  <figure class="sheet" id="try">
+  <h1 class="try-title">Read this aloud. See what a rater would mark.</h1>
+  <figure class="sheet try-sheet" id="try" data-state="idle">
     <div class="sheet-head try-head">
-      <div class="try-pick">
-        <label for="try-sentence">Sentence to read</label>
-        <div class="chips" id="try-examples" role="group" aria-label="Example sentences"></div>
-        <input type="text" id="try-sentence" autocomplete="off" spellcheck="true" maxlength="200" placeholder="Or type your own, in English">
+      <div class="try-nav">
+        <button class="try-arrow" type="button" id="try-prev" aria-label="Previous sentence"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <span class="stage-label" id="try-count">Sentence 1 of 6</span>
+        <button class="try-arrow" type="button" id="try-next" aria-label="Next sentence"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
-      <div class="try-controls">
-        <button class="btn" type="button" id="try-load">Download the model</button>
-        <button class="btn" type="button" id="try-record" hidden disabled>Record</button>
-        <label class="btn btn-line try-file" id="try-file-label" hidden>Use an audio file<input type="file" id="try-file" accept="audio/*" disabled></label>
-      </div>
-      <div class="try-status">
-        <p id="try-status" role="status" aria-live="polite">The model downloads once, about 130&nbsp;MB, then stays in your browser.</p>
-        <div class="try-bar" id="try-bar" hidden><div></div></div>
-      </div>
+      <button class="try-own" type="button" id="try-own">Type your own</button>
     </div>
-    <div class="sheet-body" id="try-result" hidden>
+    <div class="sheet-body try-body">
       <div class="reading">
-        <div class="player">
+        <div class="player" id="try-player" hidden>
           <button class="play" type="button" aria-label="Play your recording"></button>
           <div class="wave"><canvas role="img" aria-label="Waveform of your recording; the words to work on are in red"></canvas></div>
         </div>
-        <p class="said-row"></p>
-        <div class="notes"></div>
+        <p class="said-row try-text" id="try-text"></p>
+        <textarea class="try-input" id="try-input" rows="2" maxlength="200" spellcheck="true" placeholder="Type an English sentence, then press Record" aria-label="Your sentence" hidden></textarea>
+        <div class="notes" id="try-notes" hidden></div>
       </div>
-      <div class="margin">
-        <div class="grade" aria-label="Overall score">
-          <svg viewBox="0 0 116 86" aria-hidden="true"><path pathLength="1" d="M60 8C28 6 8 22 9 44c1 22 26 36 54 34 28-2 46-18 44-38C105 20 84 9 56 10c-9 0-17 2-24 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span class="big-score"></span>
+      <div class="margin try-margin">
+        <div class="try-act" id="try-act">
+          <button class="rec" type="button" id="try-record" aria-label="Record">
+            <svg class="rec-ring" viewBox="0 0 100 100" aria-hidden="true"><circle class="rec-track" cx="50" cy="50" r="47"/><circle class="rec-prog" cx="50" cy="50" r="47" pathLength="1"/></svg>
+            <span class="rec-icon" aria-hidden="true"></span>
+          </button>
+          <p class="try-status" id="try-status" role="status" aria-live="polite">Press, then read the sentence.</p>
+          <div class="try-bar" id="try-bar" hidden><div></div></div>
+          <div class="try-ask" id="try-ask" hidden>
+            <p>Your browser is set to save data, and the first recording needs a download of about 130&nbsp;MB.</p>
+            <div class="try-ask-btns"><button class="btn" type="button" id="try-ask-yes">Download and record</button><button class="btn btn-line" type="button" id="try-ask-no">Not now</button></div>
+          </div>
+          <p class="try-size" id="try-size">First time: about 130&nbsp;MB, downloaded once and kept by your browser.</p>
+          <label class="try-file">or score an audio file<input type="file" id="try-file" accept="audio/*"></label>
         </div>
-        <div class="dims">
-          <div class="dim"><span>Accuracy</span><b data-dim="accuracy"></b></div>
-          <div class="dim"><span>Fluency</span><b data-dim="fluency"></b></div>
-          <div class="dim"><span>Prosody</span><b data-dim="prosodic"></b></div>
+        <div class="try-grade" id="try-grade" hidden>
+          <div class="grade" aria-label="Overall score">
+            <svg viewBox="0 0 116 86" aria-hidden="true"><path pathLength="1" d="M60 8C28 6 8 22 9 44c1 22 26 36 54 34 28-2 46-18 44-38C105 20 84 9 56 10c-9 0-17 2-24 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="big-score"></span>
+          </div>
+          <div class="dims">
+            <div class="dim"><span>Accuracy</span><b data-dim="accuracy"></b></div>
+            <div class="dim"><span>Fluency</span><b data-dim="fluency"></b></div>
+            <div class="dim"><span>Prosody</span><b data-dim="prosodic"></b></div>
+          </div>
+          <button class="btn try-again" type="button" id="try-again"><span class="rec-dot" aria-hidden="true"></span>Try again</button>
         </div>
       </div>
     </div>
-    <figcaption class="stage-foot" id="try-foot" hidden></figcaption>
+    <figcaption class="stage-foot try-foot" id="try-foot">Your voice stays on this device. Nothing is uploaded, and your browser&rsquo;s network tab will show you so.</figcaption>
   </figure>
 </section>
 
 <section class="block">
   <div class="wrap">
-    <h2>Before you press Record</h2>
+    <h2>How 1.2&nbsp;GB became 123&nbsp;MB</h2>
     <div class="prose">
-      <p><strong>The first visit downloads about 130&nbsp;MB.</strong> Most of it is the speech model, and your browser keeps it, so later visits do not download it again. On a metered connection, wait for Wi-Fi.</p>
-      <p><strong>Nothing is uploaded.</strong> The recording is analysed by this page, on your device. No server receives it, and you can check that in your browser&rsquo;s network tab.</p>
-      <p><strong>English, read aloud, only.</strong> The page needs the sentence you meant to read. Free speech and the other languages are in the <a href="developers.html">Python library</a>.</p>
-      <p><strong>The score can be a couple of points away from the Python library&rsquo;s.</strong> To fit in a browser, the page runs a smaller model distilled from the library&rsquo;s, with its weights rounded to 8-bit integers. Given that same small model, the library and the page flag the same words on nearly every recording, and their totals differ by less than a point on average.</p>
+      <p>The Python library listens through a large speech model: about 315 million parameters, 1.2&nbsp;GB on disk. A server carries that without trouble. A web page cannot.</p>
+      <p>So a smaller model, with 95 million parameters, was trained to imitate it. Both listened to the same 32 hours of English speech, with no transcript and no rating, and the small one learned to answer as the large one did. Rounded to 8-bit integers, its weights come to 123&nbsp;MB, which your browser downloads once and runs with onnxruntime-web.</p>
+    </div>
+    <div class="distil" role="img" aria-label="The large model, 315 million parameters and 1.2 GB, is imitated by a small model of 95 million parameters on 32 hours of speech; rounded to 8 bits, the small model weighs 123 MB and runs in the page.">
+      <div class="distil-box"><b>Large model</b><span>315&nbsp;M parameters</span><span>1.2&nbsp;GB, on a server</span></div>
+      <div class="distil-arrow"><svg viewBox="0 0 60 24" aria-hidden="true"><path d="M2 12h52M46 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>imitated on 32&nbsp;h of speech</span></div>
+      <div class="distil-box"><b>Small model</b><span>95&nbsp;M parameters</span><span>the same answers</span></div>
+      <div class="distil-arrow"><svg viewBox="0 0 60 24" aria-hidden="true"><path d="M2 12h52M46 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>rounded to 8&nbsp;bits</span></div>
+      <div class="distil-box distil-page"><b>This page</b><span>123&nbsp;MB</span><span>on your device</span></div>
+    </div>
+    <div class="prose">
+      <p>Shrinking it cost nothing measurable. On the 2,500 test recordings of speechocean762, each scored by expert raters, the small model finds the mispronounced words as well as the large one, and its total follows the raters a little more closely.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="distil-table">
+        <thead><tr><th>Model</th><th class="num">Size</th><th class="num">Word detection (AUC)</th><th class="num">Total score (Pearson)</th></tr></thead>
+        <tbody>
+          <tr><td>Large, the library&rsquo;s default</td><td class="num">1.2&nbsp;GB</td><td class="num">0.928</td><td class="num">0.790</td></tr>
+          <tr><td>Small</td><td class="num">382&nbsp;MB</td><td class="num">0.938</td><td class="num">0.802</td></tr>
+          <tr><td>Small, 8-bit, in this page</td><td class="num">123&nbsp;MB</td><td class="num">0.939</td><td class="num">0.798</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="prose">
+      <p class="soft">Read those numbers with one caution. While it learned, the small model heard learners from the training half of the same corpus, so on your own recordings expect what the large model gives, not better.</p>
+      <p class="actions"><a class="text-link" href="https://huggingface.co/OpenPronounce/wav2vec2-base-phones-en">The model on Hugging Face</a><a class="text-link" href="https://github.com/OpenPronounce/OpenPronounce/tree/main/js">The JavaScript code</a><a class="text-link" href="docs/benchmarks.html">All the benchmarks</a></p>
     </div>
   </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Your learners, your app, no audio server</h2>
+    <div class="prose">
+      <p>What this page does, your web app can do. The recording is marked on the learner&rsquo;s phone or laptop, so you have no audio server to run and nothing to pay per minute of speech. No recording reaches a processor, so there is none to declare under the GDPR. Once the model is loaded, it keeps working offline.</p>
+      <p>Today it covers English read aloud. The JavaScript is under the AGPL, like the rest of OpenPronounce, and shipping it inside a closed product takes the <a href="docs/licensing.html">commercial licence</a>.</p>
+    </div>
+    <div class="actions">
+      <a class="btn" href="pricing.html">See the licences</a>
+      <a class="btn btn-line" href="contact.html">Talk about your product</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap try-fine">
+  <p>The page handles English read aloud only; free speech and the other languages are in the <a href="developers.html">Python library</a>. Its scores can differ from the library&rsquo;s by a couple of points, because it runs the 8-bit weights.</p>
 </section>
 
 <script type="module" src="assets/try/try.js"></script>
