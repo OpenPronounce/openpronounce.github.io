@@ -14,7 +14,7 @@ import { createAssessor, decodeToMono16k, wordsOf } from "./lib/index.js";
 const ORT_VERSION = "1.22.0";
 const ORT_BASE = `https://cdn.jsdelivr.net/npm/onnxruntime-web@${ORT_VERSION}/dist/`;
 const MODEL_URL = "https://huggingface.co/OpenPronounce/wav2vec2-base-phones-en/resolve/main/onnx/model_int8.onnx";
-const MODEL_CACHE = "openpronounce-model-v1";
+const MODEL_CACHE = "openpronounce-model-v2";
 const MAX_SECONDS = 20;
 const EXAMPLES = [
   "The quick brown fox jumps over the lazy dog",
@@ -126,9 +126,12 @@ async function modelBytes(cache) {
   }
   metrics.modelFrom = "network";
   progress.phase = "download";
-  const response = await fetch(modelUrl);
+  progress.received = 0;
+  progress.total = 0;
+  const response = await fetch(modelUrl, { cache: "no-store" });
   if (!response.ok) throw new Error(`the model could not be downloaded (HTTP ${response.status})`);
-  progress.total = Number(response.headers.get("Content-Length")) || 0;
+  // Content-Length counts compressed bytes when the response is encoded: only trust it otherwise.
+  progress.total = response.headers.get("Content-Encoding") ? 0 : Number(response.headers.get("Content-Length")) || 0;
   const reader = response.body.getReader();
   const chunks = [];
   for (;;) {
@@ -139,7 +142,11 @@ async function modelBytes(cache) {
     showProgress();
   }
   progress.phase = "";
-  const bytes = new Uint8Array(progress.received);
+  const size = chunks.reduce((n, chunk) => n + chunk.length, 0);
+  if (progress.total && size !== progress.total) {
+    throw new Error(`the download stopped at ${mb(size)} of ${mb(progress.total)} MB; try again`);
+  }
+  const bytes = new Uint8Array(size);
   let offset = 0;
   for (const chunk of chunks) {
     bytes.set(chunk, offset);
@@ -164,7 +171,16 @@ function ensureModel() {
     metrics.downloadMs = performance.now() - metrics.start;
     ort.env.wasm.wasmPaths = ORT_BASE;
     ort.env.wasm.numThreads = self.crossOriginIsolated ? Math.min(4, navigator.hardwareConcurrency || 1) : 1;
-    const assessor = await createAssessor({ ort, modelBytes: bytes, dataUrl: new URL("data/", import.meta.url).href });
+    const dataUrl = new URL("data/", import.meta.url).href;
+    let assessor;
+    try {
+      assessor = await createAssessor({ ort, modelBytes: bytes, dataUrl });
+    } catch (error) {
+      // A stored copy that no longer parses is thrown away and fetched again, once.
+      if (metrics.modelFrom !== "cache") throw error;
+      if (cache) await cache.delete(modelUrl).catch(() => {});
+      assessor = await createAssessor({ ort, modelBytes: await modelBytes(cache), dataUrl });
+    }
     metrics.readyMs = performance.now() - metrics.start;
     metrics.threads = ort.env.wasm.numThreads;
     ui.size.textContent = "The model is ready on this device.";
