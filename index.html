@@ -108,10 +108,6 @@ result[<span class="s">"reasons"</span>]     <span class="c"># ['not said: good'
         <p>A voice recording is personal data. Sent to a cloud API, each one goes to a vendor: one more processor in your privacy policy, a contract to sign, sometimes a transfer outside the European Union. OpenPronounce runs on an ordinary CPU server (a two-second sentence takes 0.45&nbsp;s in quick mode on 16 threads, models loaded) and works offline once the speech models are downloaded.</p>
       </div>
       <div>
-        <h3>Or on the learner&rsquo;s own device</h3>
-        <p>For English read aloud, the analysis also fits in a web page. A model distilled from the large one, 123&nbsp;MB once rounded to 8-bit weights, runs in the browser and agrees with expert raters as well as the original does. No audio server, and no recording leaves the phone or laptop. <a href="try.html">Try it with your voice</a>, or read <a href="try.html#distilled">how it was made</a>.</p>
-      </div>
-      <div>
         <h3>No meter</h3>
         <p>Cloud APIs charge by the minute or by the request. OpenPronounce is free under the AGPL, and a closed product pays a yearly licence with no volume limit. You still pay for the servers it runs on.</p>
       </div>
@@ -121,6 +117,26 @@ result[<span class="s">"reasons"</span>]     <span class="c"># ['not said: good'
       </div>
     </div>
     <p class="small soft why-note">One default to know about: the first time a sentence is analysed, its text (never the audio) goes to Google's speech synthesis to build a reference reading. <a href="docs/configuration.html">One setting turns it off</a>.</p>
+  </div>
+</section>
+
+<section class="block device reveal">
+  <div class="wrap">
+    <h2 class="display">Or let it run on the learner&rsquo;s own device.</h2>
+    <p class="lead">For English read aloud, OpenPronounce also fits in a web page. The recording is marked on the phone or laptop that made it: no audio server to run, nothing uploaded, and it keeps working offline once loaded.</p>
+    <div class="distil" role="img" aria-label="The large model, 315 million parameters and 1.2 GB, is imitated by a small model of 95 million parameters on 32 hours of speech; rounded to 8 bits, the small model weighs 123 MB and runs in the browser.">
+      <div class="distil-box"><b>Large model</b><span>315&nbsp;M parameters</span><span>1.2&nbsp;GB, on a server</span></div>
+      <div class="distil-arrow"><svg viewBox="0 0 60 24" aria-hidden="true"><path d="M2 12h52M46 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>imitated on 32&nbsp;h of speech</span></div>
+      <div class="distil-box"><b>Small model</b><span>95&nbsp;M parameters</span><span>the same answers</span></div>
+      <div class="distil-arrow"><svg viewBox="0 0 60 24" aria-hidden="true"><path d="M2 12h52M46 5l8 7-8 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>rounded to 8&nbsp;bits</span></div>
+      <div class="distil-box distil-page"><b>In the browser</b><span>123&nbsp;MB, downloaded once</span><span>on the learner&rsquo;s device</span></div>
+    </div>
+    <p class="prose soft">The small model was distilled from the large one, and it agrees with expert raters just as well: on the speechocean762 test recordings it finds the mispronounced words with an AUC of 0.939, against 0.928 for the original. In your own app, it runs under the AGPL like the rest, or under the commercial licence in a closed product.</p>
+    <div class="actions">
+      <a class="btn" href="try.html">Try it with your voice</a>
+      <a class="text-link" href="try.html#distilled">How it was made</a>
+      <a class="text-link" href="try.html#product">For product teams</a>
+    </div>
   </div>
 </section>
 
