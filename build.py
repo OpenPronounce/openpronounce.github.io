@@ -28,6 +28,12 @@ GITHUB_MARK = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentC
 STAR = (f'<a class="star-btn" href="{REPO}" aria-label="Star OpenPronounce on GitHub">{GITHUB_MARK}'
         '<span>Star</span><span class="stars" data-stars hidden></span></a>')
 
+HF = ('<a class="hf-btn" href="https://huggingface.co/OpenPronounce" aria-label="OpenPronounce models on Hugging Face">'
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="11" r="8.5" fill="#FFD21E"/><circle cx="9" cy="9.5" r="1.3" fill="#3A3B45"/>'
+      '<circle cx="15" cy="9.5" r="1.3" fill="#3A3B45"/><path d="M8.6 12.6c.9 1.5 2 2.2 3.4 2.2s2.5-.7 3.4-2.2" stroke="#3A3B45" stroke-width="1.4" '
+      'fill="none" stroke-linecap="round"/><path d="M3.5 15.5c1.2-.6 2.4.1 3 1.3l1.2 2.4c.4.9-.5 1.8-1.5 1.6-1.6-.4-3-1.5-3.4-3-.2-.9.1-1.9.7-2.3zM20.5 '
+      '15.5c-1.2-.6-2.4.1-3 1.3l-1.2 2.4c-.4.9.5 1.8 1.5 1.6 1.6-.4 3-1.5 3.4-3 .2-.9-.1-1.9-.7-2.3z" fill="#FF9D0B"/></svg></a>')
+
 DOCS = [
     ("Getting started", [("docs/index.html", "Introduction"), ("docs/install.html", "Installation")]),
     ("Using it", [("docs/read-speech.html", "A sentence to read"), ("docs/free-speech.html", "Free speech"),
@@ -64,7 +70,7 @@ HEAD = """<!doctype html>
 <link rel="icon" href="{root}assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Charis+SIL&family=Caveat:wght@500;600&display=swap">
 <link rel="stylesheet" href="{root}assets/site.css">
 <script>document.documentElement.classList.add("js")</script>
 </head>
@@ -82,7 +88,7 @@ HEAD = """<!doctype html>
       <a href="{root}pricing.html"{cur_pricing}>Pricing</a>
       <a class="btn nav-install" href="{root}developers.html">Install</a>
     </nav>
-    {star}
+    {hf}{star}
     <a class="btn head-install" href="{root}developers.html">Install</a>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
   </div>
@@ -104,6 +110,7 @@ FOOT = """</main>
         <li><a href="{root}teams.html">Evaluate</a></li>
         <li><a href="{root}pricing.html">Pricing</a></li>
         <li><a href="https://github.com/OpenPronounce/OpenPronounce">GitHub</a></li>
+        <li><a href="https://huggingface.co/OpenPronounce">Hugging Face</a></li>
         <li><a href="https://github.com/OpenPronounce/OpenPronounce/issues">Report an issue</a></li>
       </ul></div>
       <div><h4>Docs</h4><ul>
@@ -168,7 +175,7 @@ def build():
             scripts = "".join(f'<script src="{root}{s}"></script>\n' for s in meta.get("scripts", []))
             url = SITE + "/" + ("" if path == "index.html" else path)
             page = (HEAD.format(title=html.escape(meta["title"]), description=html.escape(meta["description"]), url=url,
-                                root=root, logo=LOGO, site=SITE, star=STAR, **{f"cur_{k}": v for k, v in cur.items()})
+                                root=root, logo=LOGO, site=SITE, star=STAR, hf=HF, **{f"cur_{k}": v for k, v in cur.items()})
                     + body + FOOT.format(root=root, logo=LOGO, star=STAR, scripts=scripts))
             out = os.path.join(ROOT, path)
             os.makedirs(os.path.dirname(out), exist_ok=True)
