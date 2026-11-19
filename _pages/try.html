@@ -1,0 +1,62 @@
+<!-- {"title": "Try OpenPronounce in your browser", "description": "Read an English sentence aloud and see the score and the words a rater would mark. The analysis runs in the page: the recording is never uploaded.", "nav": "try"} -->
+<section class="page-head wrap">
+  <h1>Read a sentence aloud. See what a rater would mark.</h1>
+  <p class="lead">Pick a sentence, record yourself reading it, and the page scores it with the same pipeline as the Python library. It all runs on this device, so the recording never leaves it.</p>
+</section>
+
+<section class="wrap try">
+  <figure class="sheet" id="try">
+    <div class="sheet-head try-head">
+      <div class="try-pick">
+        <label for="try-sentence">Sentence to read</label>
+        <div class="chips" id="try-examples" role="group" aria-label="Example sentences"></div>
+        <input type="text" id="try-sentence" autocomplete="off" spellcheck="true" maxlength="200" placeholder="Or type your own, in English">
+      </div>
+      <div class="try-controls">
+        <button class="btn" type="button" id="try-load">Download the model</button>
+        <button class="btn" type="button" id="try-record" hidden disabled>Record</button>
+        <label class="btn btn-line try-file" id="try-file-label" hidden>Use an audio file<input type="file" id="try-file" accept="audio/*" disabled></label>
+      </div>
+      <div class="try-status">
+        <p id="try-status" role="status" aria-live="polite">The model downloads once, about 130&nbsp;MB, then stays in your browser.</p>
+        <div class="try-bar" id="try-bar" hidden><div></div></div>
+      </div>
+    </div>
+    <div class="sheet-body" id="try-result" hidden>
+      <div class="reading">
+        <div class="player">
+          <button class="play" type="button" aria-label="Play your recording"></button>
+          <div class="wave"><canvas role="img" aria-label="Waveform of your recording; the words to work on are in red"></canvas></div>
+        </div>
+        <p class="said-row"></p>
+        <div class="notes"></div>
+      </div>
+      <div class="margin">
+        <div class="grade" aria-label="Overall score">
+          <svg viewBox="0 0 116 86" aria-hidden="true"><path pathLength="1" d="M60 8C28 6 8 22 9 44c1 22 26 36 54 34 28-2 46-18 44-38C105 20 84 9 56 10c-9 0-17 2-24 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="big-score"></span>
+        </div>
+        <div class="dims">
+          <div class="dim"><span>Accuracy</span><b data-dim="accuracy"></b></div>
+          <div class="dim"><span>Fluency</span><b data-dim="fluency"></b></div>
+          <div class="dim"><span>Prosody</span><b data-dim="prosodic"></b></div>
+        </div>
+      </div>
+    </div>
+    <figcaption class="stage-foot" id="try-foot" hidden></figcaption>
+  </figure>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Before you press Record</h2>
+    <div class="prose">
+      <p><strong>The first visit downloads about 130&nbsp;MB.</strong> Most of it is the speech model, and your browser keeps it, so later visits do not download it again. On a metered connection, wait for Wi-Fi.</p>
+      <p><strong>Nothing is uploaded.</strong> The recording is analysed by this page, on your device. No server receives it, and you can check that in your browser&rsquo;s network tab.</p>
+      <p><strong>English, read aloud, only.</strong> The page needs the sentence you meant to read. Free speech and the other languages are in the <a href="developers.html">Python library</a>.</p>
+      <p><strong>The score can be a couple of points away from the Python library&rsquo;s.</strong> To fit in a browser, the page runs a smaller model distilled from the library&rsquo;s, with its weights rounded to 8-bit integers. Given that same small model, the library and the page flag the same words on nearly every recording, and their totals differ by less than a point on average.</p>
+    </div>
+  </div>
+</section>
+
+<script type="module" src="{{root}}assets/try/try.js"></script>

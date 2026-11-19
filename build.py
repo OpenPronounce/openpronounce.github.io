@@ -74,6 +74,7 @@ HEAD = """<!doctype html>
   <div class="wrap">
     <a class="logo" href="{root}index.html">{logo}OpenPronounce</a>
     <nav class="nav" id="nav" aria-label="Main">
+      <a href="{root}try.html"{cur_try}>Try it</a>
       <a href="{root}developers.html"{cur_dev}>Developers</a>
       <a href="{root}teams.html"{cur_teams}>Evaluate</a>
       <a href="{root}docs/index.html"{cur_docs}>Docs</a>
@@ -163,7 +164,7 @@ def build():
             if path.startswith("docs/"):
                 body = docs_layout(path, body, root)
             nav = meta.get("nav", "")
-            cur = {k: (' aria-current="page"' if nav == k else "") for k in ("dev", "teams", "docs", "faq", "pricing")}
+            cur = {k: (' aria-current="page"' if nav == k else "") for k in ("try", "dev", "teams", "docs", "faq", "pricing")}
             scripts = "".join(f'<script src="{root}{s}"></script>\n' for s in meta.get("scripts", []))
             url = SITE + "/" + ("" if path == "index.html" else path)
             page = (HEAD.format(title=html.escape(meta["title"]), description=html.escape(meta["description"]), url=url,
